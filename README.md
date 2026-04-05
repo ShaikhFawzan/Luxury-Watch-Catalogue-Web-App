@@ -6,7 +6,7 @@ A full-stack web application built with Python Flask that provides a comprehensi
 
 ## Note
 
-Some product images were removed due to copyright considerations. The application functionality remains fully intact. I will be fixing this shortly. 
+Product images were removed due to copyright considerations. The application functionality remains fully intact. I will be adding images to fix this shortly. 
 
 ## Features
 
