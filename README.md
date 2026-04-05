@@ -4,6 +4,10 @@
 
 A full-stack web application built with Python Flask that provides a comprehensive platform for browsing and managing a luxury watch catalogue. This application enables users to explore an extensive collection of watches, manage personal wishlists, and receive personalized recommendations, while administrators can oversee and maintain the catalogue.
 
+## Note
+
+Some product images were removed due to copyright considerations. The application functionality remains fully intact. I will be fixing this shortly. 
+
 ## Features
 
 - **Role-Based Access Control**: Secure authentication system with distinct Admin and User roles
