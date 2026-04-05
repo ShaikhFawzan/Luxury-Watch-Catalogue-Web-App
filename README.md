@@ -34,8 +34,8 @@ A full-stack web application built with Python Flask that provides a comprehensi
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/ShaikhFawzan/Watch-Catalogue-Project-.git
-   cd Watch-Catalogue-Project-
+   git clone https://github.com/ShaikhFawzan/Luxury-Watch-Catalogue-Web-App.git
+   cd Luxury-Watch-Catalogue-Web-App
    ```
 
 2. **Create Virtual Environment** (Recommended)
