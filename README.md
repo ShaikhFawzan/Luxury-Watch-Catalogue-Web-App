@@ -112,7 +112,17 @@ Led development of key features and core functionality in a team-based full-stac
 
 ## Screenshots
 
-*Coming Soon - Screenshots will be added to demonstrate the application's interface and key features.*
+### Login Page
+![Login](images/login.png)
+
+### Watch Catalogue
+![Catalogue](images/catalogue.png)
+
+### Admin Panel (Edit Watch)
+![Admin](images/adminEdit.png)
+
+### Search, Filter, and Sort Functionality
+![Search](images/search-filter-sort.png)
 
 ## Future Improvements
 
