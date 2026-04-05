@@ -1,0 +1,16 @@
+user_id,username,password,role,wishlist
+1,user,1234,USER,"1,2,3"
+2,admin,admin123,ADMIN,"151,97,596,27"
+3,SomePerson,Hello,USER,
+4,as,s,USER,
+5,Fawzan,Pass,USER,"3,7,14,19,20"
+6,saf,13,USER,
+7,daag,92,USER,
+8,23,1234,USER,
+9,New,jfasiaf,USER,
+10,Fawzan2,Passf,USER,
+11,Tester,10,USER,
+12,FAd,sf,USER,
+13,adk,adoafiS9,USER,
+14,Fawzan4,Password2,USER,
+15,Jeff,GreenWhite2,USER,

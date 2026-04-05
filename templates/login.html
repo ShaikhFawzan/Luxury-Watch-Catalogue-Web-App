@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch Catalogue - Login</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #e8e8e8;
+            min-height: 100vh;
+            display: flex;
+
+            justify-content: center;
+            overflow-y: auto;
+            align-items: flex-start;   /* makes the scroll bar not mess up the UI */
+            padding-top: 60px;
+            /* adds spacing from top */
+
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .login-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 460px;
+            padding: 40px 20px;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 20% 50%, rgba(184, 148, 81, 0.04) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(184, 148, 81, 0.03) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(184, 148, 81, 0.02) 0%, transparent 50%);
+            animation: bgShift 20s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes bgShift {
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            33% {
+                transform: translate(2%, -1%) rotate(1deg);
+            }
+
+            66% {
+                transform: translate(-1%, 2%) rotate(-1deg);
+            }
+        }
+
+        .login-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 460px;
+            padding: 20px;
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .brand-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            border: 2px solid #b89451;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #b89451;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(184, 148, 81, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 0 12px rgba(184, 148, 81, 0);
+            }
+        }
+
+        .brand h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 600;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .brand p {
+            font-size: 12px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #b89451;
+            font-weight: 400;
+        }
+
+        .login-card {
+            background: linear-gradient(145deg, rgba(26, 26, 26, 0.9), rgba(18, 18, 18, 0.95));
+            border: 1px solid rgba(184, 148, 81, 0.15);
+            border-radius: 16px;
+            padding: 40px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-card h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 32px;
+            color: #f0f0f0;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #b89451;
+            background: rgba(184, 148, 81, 0.05);
+            box-shadow: 0 0 0 3px rgba(184, 148, 81, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #555;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #b89451, #d4a95a);
+            border: none;
+            border-radius: 10px;
+            color: #0a0a0a;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 8px;
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(135deg, #d4a95a, #e8bd6e);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(184, 148, 81, 0.3);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .secondary-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: auto;
+            padding: 12px 18px;
+            background: transparent;
+            border: 1px solid rgba(184, 148, 81, 0.5);
+            border-radius: 10px;
+            color: #b89451;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 8px;
+        }
+
+        .secondary-btn:hover {
+            background: rgba(184, 148, 81, 0.08);
+            border-color: #b89451;
+        }
+
+        .message-msg {
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            color: #9ade85;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s ease;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .message-msg.fade-away {
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+        }
+
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-top: 24px;
+            font-size: 13px;
+            color: #aaa;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .signup-card {
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .signup-card h2 {
+            margin-bottom: 24px;
+        }
+
+        .login-card {
+            position: relative;
+        }
+
+        .field-error {
+            margin-top: 6px;
+            font-size: 12px;
+            color: #ff6b6b;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+
+        .test-accounts {
+            margin-top: 32px;
+            padding: 18px;
+            background: linear-gradient(145deg, rgba(30, 30, 30, 0.6), rgba(20, 20, 20, 0.8));
+            border: 1px solid rgba(184, 148, 81, 0.2);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .test-accounts h3 {
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #b89451;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .account-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            font-size: 13px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .account-row:hover {
+            background: rgba(184, 148, 81, 0.08);
+        }
+
+        .account-row .role {
+            background: rgba(184, 148, 81, 0.15);
+            color: #d4a95a;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        .account-row .creds {
+            color: #ccc;
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+        }
+
+        .divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.06);
+            margin: 10px 0;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Decorative corner lines */
+        .login-card::before,
+        .login-card::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-color: rgba(184, 148, 81, 0.2);
+            border-style: solid;
+        }
+
+        .login-card {
+            position: relative;
+        }
+
+        .login-card::before {
+            top: -1px;
+            left: -1px;
+            border-width: 1px 0 0 1px;
+            border-radius: 16px 0 0 0;
+        }
+
+        .login-card::after {
+            bottom: -1px;
+            right: -1px;
+            border-width: 0 1px 1px 0;
+            border-radius: 0 0 16px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="brand">
+            <div class="brand-icon">&#9201;</div>
+            <h1>Watch Catalogue</h1>
+            <p>Luxury Watch Catalogue</p>
+        </div>
+
+        <div class="login-card">
+            <h2>Welcome Back</h2>
+
+            {% if message %}
+            <div class="message-msg">{{ message }}</div>
+            {% endif %}
+
+            {% if error %}
+            <div class="error-msg">{{ error }}</div>
+            {% endif %}
+
+            <div id="loginSection" class="{% if show_signup %}hidden{% endif %}">
+                <form method="POST" action="{{ url_for('login') }}">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" name="username" placeholder="Enter your username" required autofocus>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" name="password" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="login-btn">Sign In</button>
+                </form>
+
+                <div class="toggle-row">
+                    <span>New to the catalogue?</span>
+                    <button type="button" class="secondary-btn" id="showSignupBtn">Sign Up</button>
+                </div>
+            </div>
+
+            <div id="signupSection" class="signup-card {% if not show_signup %}hidden{% endif %}">
+                <h2>Create Account</h2>
+                <form method="POST" action="{{ url_for('signup') }}">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" name="username" placeholder="Choose a username" value="{{ username or '' }}"
+                            required>
+                        {% if errors and errors.username %}
+                        <div class="field-error">{{ errors.username }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" name="password" placeholder="Choose a password" required>
+                        {% if errors and errors.password %}
+                        <div class="field-error">{{ errors.password }}</div>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="login-btn">Create Account</button>
+                </form>
+                <div class="toggle-row">
+                    <span>Already have an account?</span>
+                    <button type="button" class="secondary-btn" id="showLoginBtn">Back to Login</button>
+                </div>
+            </div>
+
+            <div class="test-accounts">
+                <h3>Admin Access</h3>
+                <div class="divider"></div>
+                <div class="account-row">
+                    <span class="creds">username: admin | Password: admin123</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const showSignupBtn = document.getElementById('showSignupBtn');
+        const showLoginBtn = document.getElementById('showLoginBtn');
+        const loginSection = document.getElementById('loginSection');
+        const signupSection = document.getElementById('signupSection');
+
+        if (showSignupBtn) {
+            showSignupBtn.addEventListener('click', () => {
+                loginSection.classList.add('hidden');
+                signupSection.classList.remove('hidden');
+            });
+        }
+
+        if (showLoginBtn) {
+            showLoginBtn.addEventListener('click', () => {
+                signupSection.classList.add('hidden');
+                loginSection.classList.remove('hidden');
+            });
+        }
+
+        setTimeout(() => {
+            document.querySelectorAll('.field-error').forEach(el => {
+                el.style.opacity = '0';
+                setTimeout(() => el.remove(), 500);
+            });
+
+            const messageEl = document.querySelector('.message-msg');
+            if (messageEl) {
+                messageEl.classList.add('fade-away');
+                setTimeout(() => messageEl.remove(), 500);
+            }
+        }, 3000);
+    </script>
+</body>
+
+</html>

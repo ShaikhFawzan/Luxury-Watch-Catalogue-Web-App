@@ -1,0 +1,1749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch Catalogue - Catalogue</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        /* ── Navbar ── */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            height: 72px;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(184, 148, 81, 0.12);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+        }
+
+        .nav-brand-icon {
+            font-size: 22px;
+            color: #b89451;
+        }
+
+        .nav-brand h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #fff;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .nav-user {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .nav-user strong {
+            color: #e0e0e0;
+            font-weight: 500;
+        }
+
+        .nav-role {
+            display: inline-block;
+            padding: 3px 10px;
+            background: rgba(184, 148, 81, 0.12);
+            border: 1px solid rgba(184, 148, 81, 0.25);
+            border-radius: 20px;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #b89451;
+            margin-left: 8px;
+        }
+
+        .logout-btn {
+            padding: 8px 20px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            color: #aaa;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            border-color: rgba(220, 53, 69, 0.4);
+            color: #ff6b7a;
+            background: rgba(220, 53, 69, 0.06);
+        }
+
+        /* ── Hero / Search Bar ── */
+        .hero {
+            padding: 48px 40px 32px;
+            text-align: center;
+        }
+
+        .hero h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 500;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .hero p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 28px;
+        }
+
+        .search-bar {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 16px 20px 16px 48px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: #b89451;
+            background: rgba(184, 148, 81, 0.04);
+            box-shadow: 0 0 0 3px rgba(184, 148, 81, 0.08);
+        }
+
+        .search-bar input::placeholder { color: #555; }
+
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #555;
+            font-size: 16px;
+        }
+
+        /* ── Filters ── */
+        .filters-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px 24px;
+        }
+
+        .filters-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            color: #888;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 16px;
+        }
+
+        .filters-toggle:hover { border-color: rgba(184, 148, 81, 0.3); color: #b89451; }
+        .filters-toggle.active { border-color: #b89451; color: #b89451; }
+
+        .filters-panel {
+            display: none;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+
+        .filters-panel.open { display: flex; }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 160px;
+        }
+
+        .filter-group label {
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            color: #ddd;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: #b89451;
+        }
+
+        .filter-group select option { background: #1a1a1a; color: #ddd; }
+
+        .filter-actions {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .filter-apply {
+            padding: 10px 24px;
+            background: linear-gradient(135deg, #b89451, #d4a95a);
+            border: none;
+            border-radius: 8px;
+            color: #0a0a0a;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-apply:hover { background: linear-gradient(135deg, #d4a95a, #e8bd6e); }
+
+        .filter-clear {
+            padding: 10px 16px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #888;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .filter-clear:hover { border-color: rgba(255, 255, 255, 0.2); color: #bbb; }
+
+        /* ── Watch Grid ── */
+        .catalogue-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px 60px;
+        }
+
+        .catalogue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .watch-count {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .watch-count span { color: #b89451; font-weight: 500; }
+
+        .sort-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #ccc;
+        }
+
+        .sort-container label {
+            font-weight: 500;
+        }
+
+        .sort-container select {
+            padding: 6px 10px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .sort-container select:focus {
+            outline: none;
+            border-color: #b89451;
+        }
+
+        .add-watch-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            background: linear-gradient(135deg, #b89451, #d4a95a);
+            border: none;
+            border-radius: 8px;
+            color: #0a0a0a;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .add-watch-btn:hover {
+            background: linear-gradient(135deg, #d4a95a, #e8bd6e);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(184, 148, 81, 0.25);
+        }
+
+        .watch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .watch-card {
+            background: linear-gradient(145deg, rgba(26, 26, 26, 0.8), rgba(18, 18, 18, 0.9));
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.35s ease;
+            cursor: pointer;
+        }
+
+        .watch-card:hover {
+            border-color: rgba(184, 148, 81, 0.25);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .watch-card-image {
+            height: 220px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .watch-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 10px;
+            transition: transform 0.35s ease;
+        }
+
+        .watch-card:hover .watch-card-image img {
+            transform: scale(1.05);
+        }
+
+        .watch-card-image .watch-placeholder {
+            font-size: 48px;
+            opacity: 0.5;
+        }
+
+        .watch-card-body {
+            padding: 24px;
+        }
+
+        .watch-card-brand {
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #b89451;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .watch-card-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 500;
+            color: #fff;
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        .watch-card-specs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .spec-tag {
+            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 6px;
+            font-size: 11px;
+            color: #888;
+        }
+
+        .watch-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .watch-price {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: #b89451;
+        }
+
+        .view-details-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid rgba(184, 148, 81, 0.25);
+            border-radius: 6px;
+            color: #b89451;
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .view-details-btn:hover {
+            background: rgba(184, 148, 81, 0.1);
+            border-color: #b89451;
+        }
+
+        /* ── Modal ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.open { display: flex; }
+
+        .modal {
+            background: #141414;
+            border: 1px solid rgba(184, 148, 81, 0.15);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .modal-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            background: transparent;
+            color: #888;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        .modal-body { padding: 28px; }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .detail-item.full { grid-column: 1 / -1; }
+
+        .similar-section {
+            grid-column: 1 / -1;
+            margin-top: 24px;
+            padding-top: 22px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .similar-section h3 {
+            margin: 0 0 14px;
+            font-size: 16px;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .similar-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .similar-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+        }
+
+        .similar-meta {
+            display: grid;
+            gap: 4px;
+        }
+
+        .similar-brand {
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #b89451;
+            font-weight: 600;
+        }
+
+        .similar-name {
+            font-size: 14px;
+            color: #e0e0e0;
+            line-height: 1.3;
+        }
+
+        .similar-price {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .detail-label {
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            font-size: 15px;
+            color: #e0e0e0;
+        }
+
+        .detail-value.price {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            color: #b89451;
+            font-weight: 600;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            padding: 20px 28px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .btn-edit {
+            padding: 10px 24px;
+            background: rgba(184, 148, 81, 0.1);
+            border: 1px solid rgba(184, 148, 81, 0.3);
+            border-radius: 8px;
+            color: #b89451;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-edit:hover { background: rgba(184, 148, 81, 0.2); }
+
+        .btn-delete {
+            padding: 10px 24px;
+            background: rgba(220, 53, 69, 0.08);
+            border: 1px solid rgba(220, 53, 69, 0.25);
+            border-radius: 8px;
+            color: #ff6b7a;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-delete:hover { background: rgba(220, 53, 69, 0.15); }
+
+        /* ── Add/Edit Form Modal ── */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-grid .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-grid .form-group.full { grid-column: 1 / -1; }
+
+        .form-grid label {
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .form-grid input, .form-grid select {
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .form-grid input:focus, .form-grid select:focus {
+            outline: none;
+            border-color: #b89451;
+            background: rgba(184, 148, 81, 0.04);
+        }
+
+        .form-submit {
+            grid-column: 1 / -1;
+            padding: 14px;
+            background: linear-gradient(135deg, #b89451, #d4a95a);
+            border: none;
+            border-radius: 8px;
+            color: #0a0a0a;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 8px;
+        }
+
+        .form-submit:hover {
+            background: linear-gradient(135deg, #d4a95a, #e8bd6e);
+            box-shadow: 0 4px 16px rgba(184, 148, 81, 0.25);
+        }
+
+        /* ── Toast Notifications ── */
+        /* ── Wishlist Heart Button ── */
+        .heart-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(10,10,10,0.6);
+            border: none;
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, background 0.2s;
+            z-index: 2;
+            line-height: 1;
+        }
+        .heart-btn:hover { transform: scale(1.2); background: rgba(30,30,30,0.9); }
+        .heart-btn.active { color: #e74c3c; }
+        .heart-btn:not(.active) { color: #666; }
+
+        /* ── Compare Checkbox ── */
+        .compare-btn {
+            background: none;
+            border: 1px solid #444;
+            border-radius: 4px;
+            color: #aaa;
+            font-size: 11px;
+            padding: 3px 8px;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+        .compare-btn:hover { border-color: #b89451; color: #b89451; }
+        .compare-btn.active { border-color: #b89451; color: #b89451; background: rgba(184,148,81,0.12); }
+
+        /* ── Compare Bar ── */
+        .compare-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: #111;
+            border-top: 1px solid #b89451;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            z-index: 1000;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        .compare-bar.visible { transform: translateY(0); }
+        .compare-bar-items {
+            display: flex;
+            gap: 12px;
+            flex: 1;
+        }
+        .compare-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 12px;
+            max-width: 180px;
+        }
+        .compare-chip-img {
+            width: 32px;
+            height: 32px;
+            object-fit: cover;
+            border-radius: 4px;
+            background: #fff;
+            flex-shrink: 0;
+        }
+        .compare-chip-name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #e0e0e0;
+            font-size: 11px;
+        }
+        .compare-chip-remove {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0 2px;
+            flex-shrink: 0;
+        }
+        .compare-chip-remove:hover { color: #ff6b7a; }
+        .compare-bar-actions { display: flex; gap: 10px; align-items: center; }
+        .compare-now-btn {
+            background: linear-gradient(135deg, #b89451, #d4a95a);
+            border: none;
+            border-radius: 6px;
+            color: #0a0a0a;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 8px 20px;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: opacity 0.2s;
+        }
+        .compare-now-btn:hover { opacity: 0.85; }
+        .compare-now-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .compare-clear-btn {
+            background: none;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #888;
+            font-size: 12px;
+            padding: 7px 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .compare-clear-btn:hover { border-color: #ff6b7a; color: #ff6b7a; }
+
+        /* ── Wishlist Nav Badge ── */
+        .nav-wishlist-btn {
+            background: none;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #e0e0e0;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .nav-wishlist-btn:hover { border-color: #b89451; color: #b89451; }
+        .wishlist-badge {
+            background: #e74c3c;
+            color: #fff;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 1px 6px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        /* ── Compare Modal ── */
+        .compare-modal .modal {
+            max-width: 900px;
+            width: 95vw;
+        }
+        .compare-table-wrap {
+            overflow-x: auto;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .compare-table th {
+            padding: 10px 14px;
+            text-align: center;
+            border-bottom: 1px solid #333;
+            color: #b89451;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+        .compare-table td {
+            padding: 10px 14px;
+            text-align: center;
+            border-bottom: 1px solid #1e1e1e;
+            color: #e0e0e0;
+            vertical-align: middle;
+        }
+        .compare-table tr:last-child td { border-bottom: none; }
+        .compare-table td.row-label {
+            text-align: left;
+            color: #888;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        .compare-table tr:hover td { background: rgba(255,255,255,0.02); }
+        .compare-table .watch-img-cell img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: #fff;
+            padding: 4px;
+        }
+        .compare-table .price-cell {
+            color: #b89451;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .compare-table th.remove-col {
+            color: #444;
+            cursor: pointer;
+        }
+        .compare-table th.remove-col:hover { color: #ff6b7a; }
+
+        /* ── Wishlist Modal ── */
+        .wishlist-modal .modal {
+            max-width: 800px;
+            width: 95vw;
+        }
+        .wishlist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+            margin-top: 4px;
+        }
+        .wishlist-item {
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: border-color 0.2s, transform 0.2s;
+            position: relative;
+        }
+        .wishlist-item:hover { border-color: #b89451; transform: translateY(-2px); }
+        .wishlist-item img {
+            width: 100%;
+            height: 140px;
+            object-fit: contain;
+            background: #fff;
+            padding: 8px;
+        }
+        .wishlist-item-body { padding: 10px 12px; }
+        .wishlist-item-brand { font-size: 10px; color: #b89451; text-transform: uppercase; letter-spacing: 1px; }
+        .wishlist-item-name { font-size: 13px; color: #e0e0e0; margin: 4px 0 6px; line-height: 1.3; }
+        .wishlist-item-price { font-size: 14px; color: #b89451; font-weight: 600; }
+        .wishlist-item-remove {
+            position: absolute;
+            top: 8px; right: 8px;
+            background: rgba(10,10,10,0.7);
+            border: none;
+            border-radius: 50%;
+            width: 28px; height: 28px;
+            cursor: pointer;
+            color: #ff6b7a;
+            font-size: 14px;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .wishlist-item-remove:hover { background: rgba(220,53,69,0.2); }
+        .wishlist-empty { text-align: center; color: #555; padding: 40px 0; font-size: 14px; }
+        .wishlist-empty .icon { font-size: 40px; margin-bottom: 12px; }
+
+        .toast-container {
+            position: fixed;
+            top: 88px;
+            right: 24px;
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast {
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .toast.success {
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #4ade80;
+        }
+
+        .toast.error {
+            background: rgba(220, 53, 69, 0.12);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #ff6b7a;
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes toastOut {
+            from { opacity: 1; }
+            to { opacity: 0; transform: translateY(-10px); }
+        }
+
+        /* ── Empty State ── */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #555;
+        }
+
+        .empty-state .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.3; }
+
+        .empty-state h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        /* ── Pagination ── */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid rgba(184, 148, 81, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            color: #aaa;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .page-btn:hover {
+            border-color: #b89451;
+            color: #b89451;
+            background: rgba(184, 148, 81, 0.08);
+        }
+
+        .page-btn.active {
+            background: #b89451;
+            border-color: #b89451;
+            color: #0a0a0a;
+            font-weight: 600;
+        }
+
+        .page-dots {
+            color: #555;
+            padding: 0 4px;
+        }
+
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(184, 148, 81, 0.2); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(184, 148, 81, 0.35); }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a class="nav-brand" href="{{ url_for('catalogue_page') }}">
+            <span class="nav-brand-icon">&#9201;</span>
+            <h1>Watch Catalogue</h1>
+        </a>
+        <div class="nav-right">
+            <button class="nav-wishlist-btn" onclick="openWishlistModal()">
+                &#9829; Wishlist
+                <span class="wishlist-badge" id="wishlistBadge" {% if wishlist_count == 0 %}style="display:none"{% endif %}>{{ wishlist_count }}</span>
+            </button>
+            <div class="nav-user">
+                <strong>{{ username }}</strong>
+                <span class="nav-role">{{ 'Admin' if is_admin else 'User' }}</span>
+            </div>
+            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+        </div>
+    </nav>
+
+    <!-- Hero & Search -->
+    <section class="hero">
+        <h2>The Collection</h2>
+        <p>Browse our curated selection of luxury timepieces</p>
+        <form class="search-bar" method="GET" action="{{ url_for('catalogue_page') }}">
+            <span class="search-icon">&#128269;</span>
+            <input type="text" name="q" placeholder="Search by name, brand, or certification..." value="{{ query }}">
+        </form>
+    </section>
+
+    <!-- Filters -->
+    <section class="filters-section">
+        <button class="filters-toggle {% if sel_brand or sel_material or sel_condition or sel_min_price or sel_max_price %}active{% endif %}"
+                onclick="toggleFilters()">
+            &#9881; Filters
+        </button>
+        <form class="filters-panel {% if sel_brand or sel_material or sel_condition or sel_min_price or sel_max_price %}open{% endif %}"
+              id="filtersPanel" method="GET" action="{{ url_for('catalogue_page') }}">
+            <div class="filter-group">
+                <label>Brand</label>
+                <select name="brand">
+                    <option value="">All Brands</option>
+                    {% for b in brands %}
+                    <option value="{{ b }}" {% if sel_brand == b %}selected{% endif %}>{{ b }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Material</label>
+                <select name="material">
+                    <option value="">All</option>
+                    {% for m in materials %}
+                    <option value="{{ m }}" {% if sel_material == m %}selected{% endif %}>{{ m }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Condition</label>
+                <select name="condition">
+                    <option value="">All</option>
+                    {% for c in conditions %}
+                    <option value="{{ c }}" {% if sel_condition == c %}selected{% endif %}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Min Price ($)</label>
+                <input type="number" name="min_price" placeholder="0" value="{{ sel_min_price }}">
+            </div>
+            <div class="filter-group">
+                <label>Max Price ($)</label>
+                <input type="number" name="max_price" placeholder="Any" value="{{ sel_max_price }}">
+            </div>
+            <div class="filter-actions">
+                <button type="submit" class="filter-apply">Apply</button>
+                <a href="{{ url_for('catalogue_page') }}" class="filter-clear">Clear</a>
+            </div>
+        </form>
+    </section>
+
+    <!-- Catalogue -->
+    <section class="catalogue-section">
+        <div class="catalogue-header">
+            <div class="watch-count">Showing <span>{{ watches|length }}</span> of <span>{{ total }}</span> timepiece{{ 's' if total != 1 else '' }}</div>
+            <div class="sort-container">
+                <label for="sort-select">Sort by:</label>
+                <select id="sort-select" onchange="updateSort(this.value)">
+                    <option value="" {% if not sel_sort %}selected{% endif %}>Default</option>
+                    <option value="price_low" {% if sel_sort == "price_low" %}selected{% endif %}>Price: Low to High</option>
+                    <option value="price_high" {% if sel_sort == "price_high" %}selected{% endif %}>Price: High to Low</option>
+                    <option value="brand_az" {% if sel_sort == "brand_az" %}selected{% endif %}>Brand: A–Z</option>
+                    <option value="brand_za" {% if sel_sort == "brand_za" %}selected{% endif %}>Brand: Z–A</option>
+                    <option value="condition" {% if sel_sort == "condition" %}selected{% endif %}>Condition</option>
+                </select>
+            </div>
+            {% if is_admin %}
+            <button class="add-watch-btn" onclick="openAddModal()">+ Add Watch</button>
+            {% endif %}
+        </div>
+
+        {% if watches %}
+        <div class="watch-grid">
+            {% for watch in watches %}
+            <div class="watch-card" onclick="openDetailModal({{ watch.watch_id }})">
+                <div class="watch-card-image">
+                    {% if watch.image_url %}
+                    <img src="{{ watch.image_url }}" alt="{{ watch.name }}" loading="lazy">
+                    {% else %}
+                    <span class="watch-placeholder">&#9201;</span>
+                    {% endif %}
+                    <button class="heart-btn {% if watch.watch_id in wishlist_ids %}active{% endif %}"
+                            id="heart-{{ watch.watch_id }}"
+                            onclick="event.stopPropagation(); toggleWishlist({{ watch.watch_id }}, this)"
+                            title="{% if watch.watch_id in wishlist_ids %}Remove from wishlist{% else %}Add to wishlist{% endif %}">
+                        &#9829;
+                    </button>
+                </div>
+                <div class="watch-card-body">
+                    <div class="watch-card-brand">{{ watch.brand }}</div>
+                    <div class="watch-card-name">{{ watch.name }}</div>
+                    <div class="watch-card-specs">
+                        <span class="spec-tag">{{ watch.material }}</span>
+                        <span class="spec-tag">{{ watch.condition }}</span>
+                    </div>
+                    <div class="watch-card-footer">
+                        <span class="watch-price">${{ '{:,.2f}'.format(watch.price) }}</span>
+                        <div style="display:flex;gap:6px;">
+                            <button class="compare-btn" id="cmp-{{ watch.watch_id }}"
+                                    onclick="event.stopPropagation(); toggleCompare({{ watch.watch_id }}, '{{ watch.name|replace("'","\\'")|replace('"','\\"') }}', '{{ watch.image_url }}', this)">
+                                + Compare
+                            </button>
+                            <button class="view-details-btn" onclick="event.stopPropagation(); openDetailModal({{ watch.watch_id }})">Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="icon">&#9201;</div>
+            <h3>No watches found</h3>
+            <p>Try adjusting your search or filters.</p>
+        </div>
+        {% endif %}
+
+        {% if total_pages > 1 %}
+        <div class="pagination">
+            {% if page > 1 %}
+            <a href="?page={{ page - 1 }}&q={{ query }}&brand={{ sel_brand }}&material={{ sel_material }}&condition={{ sel_condition }}&min_price={{ sel_min_price }}&max_price={{ sel_max_price }}" class="page-btn">&laquo; Prev</a>
+            {% endif %}
+
+            {% for p in range(1, total_pages + 1) %}
+                {% if p == page %}
+                <span class="page-btn active">{{ p }}</span>
+                {% elif p <= 3 or p > total_pages - 3 or (p >= page - 2 and p <= page + 2) %}
+                <a href="?page={{ p }}&q={{ query }}&brand={{ sel_brand }}&material={{ sel_material }}&condition={{ sel_condition }}&min_price={{ sel_min_price }}&max_price={{ sel_max_price }}" class="page-btn">{{ p }}</a>
+                {% elif p == 4 or p == total_pages - 3 %}
+                <span class="page-dots">...</span>
+                {% endif %}
+            {% endfor %}
+
+            {% if page < total_pages %}
+            <a href="?page={{ page + 1 }}&q={{ query }}&brand={{ sel_brand }}&material={{ sel_material }}&condition={{ sel_condition }}&min_price={{ sel_min_price }}&max_price={{ sel_max_price }}" class="page-btn">Next &raquo;</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- Detail Modal -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="detailTitle">Watch Details</h2>
+                <button class="modal-close" onclick="closeModal('detailModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-grid" id="detailGrid"></div>
+            </div>
+            {% if is_admin %}
+            <div class="modal-actions">
+                <button class="btn-edit" id="editBtn" onclick="openEditFromDetail()">Edit</button>
+                <button class="btn-delete" id="deleteBtn" onclick="deleteCurrentWatch()">Delete</button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal-overlay" id="formModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="formTitle">Add Watch</h2>
+                <button class="modal-close" onclick="closeModal('formModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-grid" id="watchForm">
+                    <div class="form-group">
+                        <label>Watch ID</label>
+                        <input type="number" id="fWatchId" placeholder="Unique ID">
+                    </div>
+                    <div class="form-group">
+                        <label>Price ($)</label>
+                        <input type="number" step="0.01" id="fPrice" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" id="fName" placeholder="Watch name">
+                    </div>
+                    <div class="form-group">
+                        <label>Brand</label>
+                        <input type="text" id="fBrand" placeholder="Brand name">
+                    </div>
+                    <div class="form-group">
+                        <label>Material</label>
+                        <input type="text" id="fMaterial" placeholder="Stainless Steel, Gold...">
+                    </div>
+                    <div class="form-group">
+                        <label>Reference</label>
+                        <input type="text" id="fReference" placeholder="Ref number">
+                    </div>
+                    <div class="form-group">
+                        <label>Condition</label>
+                        <input type="text" id="fCondition" placeholder="New, Used, Unworn...">
+                    </div>
+                    <div class="form-group full">
+                        <label>Image URL</label>
+                        <input type="text" id="fImageUrl" placeholder="https://...">
+                    </div>
+                    <button class="form-submit" onclick="submitWatchForm()">Save Watch</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wishlist Modal -->
+    <div class="modal-overlay wishlist-modal" id="wishlistModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>&#9829; My Wishlist</h2>
+                <button class="modal-close" onclick="closeModal('wishlistModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="wishlistBody">
+                <div class="wishlist-empty"><div class="icon">&#9825;</div>Your wishlist is empty.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compare Modal -->
+    <div class="modal-overlay compare-modal" id="compareModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Compare Watches</h2>
+                <button class="modal-close" onclick="closeModal('compareModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="compare-table-wrap">
+                    <table class="compare-table" id="compareTable"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compare Bar -->
+    <div class="compare-bar" id="compareBar">
+        <div class="compare-bar-items" id="compareChips"></div>
+        <div class="compare-bar-actions">
+            <span style="color:#888;font-size:12px;" id="compareCount">0 / 4 selected</span>
+            <button class="compare-clear-btn" onclick="clearCompare()">Clear</button>
+            <button class="compare-now-btn" id="compareNowBtn" onclick="openCompareModal()" disabled>Compare Now</button>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        let currentWatchId = null;
+        let isEditing = false;
+
+        /* ── Filters ── */
+        function toggleFilters() {
+            const panel = document.getElementById('filtersPanel');
+            const btn = document.querySelector('.filters-toggle');
+            panel.classList.toggle('open');
+            btn.classList.toggle('active');
+        }
+
+        /* ── Sort ── */
+        function updateSort(sortValue) {
+            const url = new URL(window.location);
+            if (sortValue) {
+                url.searchParams.set('sort', sortValue);
+            } else {
+                url.searchParams.delete('sort');
+            }
+            window.location = url;
+        }
+
+        /* ── Modals ── */
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) overlay.classList.remove('open');
+            });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+            }
+        });
+
+        /* ── Detail Modal ── */
+        async function openDetailModal(watchId) {
+            currentWatchId = watchId;
+            const res = await fetch(`/api/watch/${watchId}`);
+            const data = await res.json();
+
+            if (data.error) { showToast(data.error, 'error'); return; }
+
+            document.getElementById('detailTitle').textContent = data.name;
+
+            const grid = document.getElementById('detailGrid');
+            const imgHtml = data.image_url
+                ? `<div class="detail-item full" style="justify-content:center;"><img src="${data.image_url}" alt="${data.name}" style="max-height:250px;object-fit:contain;border-radius:10px;background:#fff;padding:10px;"></div>`
+                : '';
+
+            const similarHtml = (data.similar_watches && data.similar_watches.length)
+                ? `<div class="detail-item full similar-section">
+                        <h3>Similar Watches</h3>
+                        <div class="similar-grid">
+                            ${data.similar_watches.map(w => `
+                                <div class="similar-item">
+                                    <div class="similar-meta">
+                                        <span class="similar-brand">${w.brand}</span>
+                                        <span class="similar-name">${w.name}</span>
+                                    </div>
+                                    <span class="similar-price">$${parseFloat(w.price).toLocaleString('en-US', {minimumFractionDigits: 2})}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                   </div>`
+                : '';
+
+            grid.innerHTML = `
+                ${imgHtml}
+                <div class="detail-item full">
+                    <span class="detail-label">Price</span>
+                    <span class="detail-value price">$${parseFloat(data.price).toLocaleString('en-US', {minimumFractionDigits: 2})}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Brand</span>
+                    <span class="detail-value">${data.brand}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Reference</span>
+                    <span class="detail-value">${data.reference}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Material</span>
+                    <span class="detail-value">${data.material}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Condition</span>
+                    <span class="detail-value">${data.condition}</span>
+                </div>
+                ${similarHtml}
+            `;
+
+            document.getElementById('detailModal').classList.add('open');
+        }
+
+        /* ── Add Modal ── */
+        function openAddModal() {
+            isEditing = false;
+            document.getElementById('formTitle').textContent = 'Add Watch';
+            document.getElementById('fWatchId').value = '';
+            document.getElementById('fWatchId').disabled = false;
+            document.getElementById('fName').value = '';
+            document.getElementById('fBrand').value = '';
+            document.getElementById('fPrice').value = '';
+            document.getElementById('fMaterial').value = '';
+            document.getElementById('fReference').value = '';
+            document.getElementById('fCondition').value = '';
+            document.getElementById('fImageUrl').value = '';
+            document.getElementById('formModal').classList.add('open');
+        }
+
+        /* ── Edit from Detail ── */
+        async function openEditFromDetail() {
+            isEditing = true;
+            closeModal('detailModal');
+
+            const res = await fetch(`/api/watch/${currentWatchId}`);
+            const data = await res.json();
+
+            document.getElementById('formTitle').textContent = 'Edit Watch';
+            document.getElementById('fWatchId').value = data.watch_id;
+            document.getElementById('fWatchId').disabled = true;
+            document.getElementById('fName').value = data.name;
+            document.getElementById('fBrand').value = data.brand;
+            document.getElementById('fPrice').value = data.price;
+            document.getElementById('fMaterial').value = data.material;
+            document.getElementById('fReference').value = data.reference;
+            document.getElementById('fCondition').value = data.condition;
+            document.getElementById('fImageUrl').value = data.image_url;
+            document.getElementById('formModal').classList.add('open');
+        }
+
+        /* ── Submit Add/Edit ── */
+        async function submitWatchForm() {
+            const payload = {
+                watch_id: parseInt(document.getElementById('fWatchId').value),
+                name: document.getElementById('fName').value.trim(),
+                brand: document.getElementById('fBrand').value.trim(),
+                price: parseFloat(document.getElementById('fPrice').value),
+                material: document.getElementById('fMaterial').value.trim(),
+                reference: document.getElementById('fReference').value.trim(),
+                condition: document.getElementById('fCondition').value.trim(),
+                image_url: document.getElementById('fImageUrl').value.trim(),
+            };
+
+            if (!payload.name || !payload.brand || !payload.watch_id || !payload.price) {
+                showToast('Watch Id, Price, Name, and brand are required.', 'error');
+                return;
+            }
+
+            let res;
+            if (isEditing) {
+                res = await fetch(`/api/watch/${currentWatchId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+            } else {
+                res = await fetch('/api/watch', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+            }
+
+            const data = await res.json();
+
+            if (data.success) {
+                showToast(isEditing ? 'Watch updated successfully.' : 'Watch added successfully.', 'success');
+                closeModal('formModal');
+                setTimeout(() => location.reload(), 500);
+            } else {
+                showToast(data.error || 'Something went wrong.', 'error');
+            }
+        }
+
+        /* ── Delete ── */
+        async function deleteCurrentWatch() {
+            if (!confirm('Are you sure you want to delete this watch?')) return;
+
+            const res = await fetch(`/api/watch/${currentWatchId}`, { method: 'DELETE' });
+            const data = await res.json();
+
+            if (data.success) {
+                showToast('Watch deleted.', 'success');
+                closeModal('detailModal');
+                setTimeout(() => location.reload(), 500);
+            } else {
+                showToast(data.error || 'Could not delete.', 'error');
+            }
+        }
+
+        /* ── Toast ── */
+        function showToast(message, type) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        /* ── Wishlist ── */
+        async function toggleWishlist(watchId, btn) {
+            const isActive = btn.classList.contains('active');
+            const method = isActive ? 'DELETE' : 'POST';
+            const res = await fetch(`/api/wishlist/${watchId}`, { method });
+            const data = await res.json();
+            if (data.success !== undefined) {
+                btn.classList.toggle('active', !isActive);
+                btn.title = !isActive ? 'Remove from wishlist' : 'Add to wishlist';
+                updateWishlistBadge(data.count);
+                showToast(isActive ? 'Removed from wishlist.' : 'Added to wishlist!', 'success');
+            }
+        }
+
+        function updateWishlistBadge(count) {
+            const badge = document.getElementById('wishlistBadge');
+            badge.textContent = count;
+            badge.style.display = count > 0 ? '' : 'none';
+        }
+
+        async function openWishlistModal() {
+            const res = await fetch('/api/wishlist');
+            const data = await res.json();
+            const body = document.getElementById('wishlistBody');
+
+            if (!data.watches || data.watches.length === 0) {
+                body.innerHTML = '<div class="wishlist-empty"><div class="icon">&#9825;</div>Your wishlist is empty.</div>';
+            } else {
+                body.innerHTML = `<div class="wishlist-grid">${data.watches.map(w => `
+                    <div class="wishlist-item" onclick="closeModal('wishlistModal'); openDetailModal(${w.watch_id})">
+                        ${w.image_url
+                            ? `<img src="${w.image_url}" alt="${w.name}">`
+                            : `<div style="height:140px;display:flex;align-items:center;justify-content:center;font-size:40px;background:#111;">&#9201;</div>`}
+                        <button class="wishlist-item-remove" onclick="event.stopPropagation(); removeFromWishlist(${w.watch_id}, this)" title="Remove">&#10005;</button>
+                        <div class="wishlist-item-body">
+                            <div class="wishlist-item-brand">${w.brand}</div>
+                            <div class="wishlist-item-name">${w.name}</div>
+                            <div class="wishlist-item-price">$${parseFloat(w.price).toLocaleString('en-US', {minimumFractionDigits: 2})}</div>
+                        </div>
+                    </div>`).join('')}</div>`;
+            }
+            document.getElementById('wishlistModal').classList.add('open');
+        }
+
+        async function removeFromWishlist(watchId, btn) {
+            const res = await fetch(`/api/wishlist/${watchId}`, { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success !== undefined) {
+                // Remove the item card
+                btn.closest('.wishlist-item').remove();
+                updateWishlistBadge(data.count);
+                // Update heart on catalogue card if visible
+                const heartBtn = document.getElementById(`heart-${watchId}`);
+                if (heartBtn) heartBtn.classList.remove('active');
+                // Show empty state if no more items
+                const grid = document.querySelector('.wishlist-grid');
+                if (grid && grid.children.length === 0) {
+                    document.getElementById('wishlistBody').innerHTML =
+                        '<div class="wishlist-empty"><div class="icon">&#9825;</div>Your wishlist is empty.</div>';
+                }
+                showToast('Removed from wishlist.', 'success');
+            }
+        }
+
+        /* ── Compare ── */
+        const compareList = []; // [{id, name, imageUrl}]
+        const MAX_COMPARE = 4;
+
+        function toggleCompare(watchId, name, imageUrl, btn) {
+            const idx = compareList.findIndex(w => w.id === watchId);
+            if (idx !== -1) {
+                compareList.splice(idx, 1);
+                btn.classList.remove('active');
+                btn.textContent = '+ Compare';
+            } else {
+                if (compareList.length >= MAX_COMPARE) {
+                    showToast(`You can compare up to ${MAX_COMPARE} watches at once.`, 'error');
+                    return;
+                }
+                compareList.push({ id: watchId, name, imageUrl });
+                btn.classList.add('active');
+                btn.textContent = '✓ Compare';
+            }
+            renderCompareBar();
+        }
+
+        function renderCompareBar() {
+            const bar = document.getElementById('compareBar');
+            const chips = document.getElementById('compareChips');
+            const countEl = document.getElementById('compareCount');
+            const nowBtn = document.getElementById('compareNowBtn');
+
+            bar.classList.toggle('visible', compareList.length > 0);
+            countEl.textContent = `${compareList.length} / ${MAX_COMPARE} selected`;
+            nowBtn.disabled = compareList.length < 2;
+
+            chips.innerHTML = compareList.map(w => `
+                <div class="compare-chip">
+                    ${w.imageUrl
+                        ? `<img class="compare-chip-img" src="${w.imageUrl}" alt="${w.name}">`
+                        : `<div class="compare-chip-img" style="display:flex;align-items:center;justify-content:center;background:#111;font-size:18px;">&#9201;</div>`}
+                    <span class="compare-chip-name">${w.name}</span>
+                    <button class="compare-chip-remove" onclick="removeFromCompareBar(${w.id})">&#10005;</button>
+                </div>`).join('');
+        }
+
+        function removeFromCompareBar(watchId) {
+            const idx = compareList.findIndex(w => w.id === watchId);
+            if (idx !== -1) compareList.splice(idx, 1);
+            const btn = document.getElementById(`cmp-${watchId}`);
+            if (btn) { btn.classList.remove('active'); btn.textContent = '+ Compare'; }
+            renderCompareBar();
+        }
+
+        function clearCompare() {
+            while (compareList.length) {
+                const { id } = compareList.pop();
+                const btn = document.getElementById(`cmp-${id}`);
+                if (btn) { btn.classList.remove('active'); btn.textContent = '+ Compare'; }
+            }
+            renderCompareBar();
+        }
+
+        async function openCompareModal() {
+            if (compareList.length < 2) return;
+
+            // Fetch full details for each watch
+            const details = await Promise.all(
+                compareList.map(w => fetch(`/api/watch/${w.id}`).then(r => r.json()))
+            );
+
+            const fields = [
+                { label: 'Photo',      key: 'image_url',  type: 'img' },
+                { label: 'Price',      key: 'price',      type: 'price' },
+                { label: 'Brand',      key: 'brand' },
+                { label: 'Material',   key: 'material' },
+                { label: 'Reference',  key: 'reference' },
+                { label: 'Condition',  key: 'condition' },
+            ];
+
+            const table = document.getElementById('compareTable');
+            // Header row
+            const headRow = `<thead><tr>
+                <th></th>
+                ${details.map(w => `<th>
+                    <div style="font-family:'Playfair Display',serif;font-weight:600;font-size:13px;margin-bottom:2px;">${w.name}</div>
+                    <button onclick="removeFromCompare(${w.watch_id})" title="Remove" style="background:none;border:none;color:#555;cursor:pointer;font-size:12px;">&#10005; Remove</button>
+                </th>`).join('')}
+            </tr></thead>`;
+
+            const bodyRows = fields.map(f => `<tr>
+                <td class="row-label">${f.label}</td>
+                ${details.map(w => {
+                    if (f.type === 'img') return `<td class="watch-img-cell">${w.image_url ? `<img src="${w.image_url}" alt="${w.name}">` : '&#9201;'}</td>`;
+                    if (f.type === 'price') return `<td class="price-cell">$${parseFloat(w.price).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>`;
+                    return `<td>${w[f.key] || '—'}</td>`;
+                }).join('')}
+            </tr>`).join('');
+
+            table.innerHTML = headRow + `<tbody>${bodyRows}</tbody>`;
+            document.getElementById('compareModal').classList.add('open');
+        }
+
+        function removeFromCompare(watchId) {
+            removeFromCompareBar(watchId);
+            if (compareList.length < 2) {
+                closeModal('compareModal');
+                showToast('Need at least 2 watches to compare.', 'error');
+            } else {
+                openCompareModal();
+            }
+        }
+    </script>
+</body>
+</html>
