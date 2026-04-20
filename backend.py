@@ -1,4 +1,6 @@
 from enum import Enum
+from werkzeug.security import check_password_hash
+
 
 
 # Keeps the user roles clear and easy to check.
@@ -38,6 +40,7 @@ class Watch:
 
 
 # Base user class.
+
 class User:
     def __init__(self, user_id, username, password_hash, role=Role.USER, wishlist=None):
         self.user_id = user_id
@@ -48,7 +51,7 @@ class User:
         self.wishlist = wishlist if wishlist is not None else []
 
     def login(self, username, password):
-        if self.username == username and self.password_hash == password:
+        if self.username == username and check_password_hash(self.password_hash, password):
             self.logged_in = True
             return True
         return False

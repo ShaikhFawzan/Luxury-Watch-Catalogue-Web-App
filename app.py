@@ -4,6 +4,7 @@ import re
 from datetime import datetime, timezone
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from backend import Role, Watch, User, Admin, Catalogue, Review
+from werkzeug.security import generate_password_hash
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-key")
@@ -90,10 +91,15 @@ def load_users_from_csv(filepath):
             wishlist = [int(wid) for wid in wishlist_str.split(",") if wid.strip()] if wishlist_str else []
             if not username:
                 continue
-            if role_value == Role.ADMIN.value:
-                loaded_users[username] = Admin(user_id or len(loaded_users) + 1, username, password, wishlist)
+            # If password is not a hash, hash it (legacy support)
+            if password and not password.startswith('pbkdf2:'):
+                password_hash = generate_password_hash(password)
             else:
-                loaded_users[username] = User(user_id or len(loaded_users) + 1, username, password, Role.USER, wishlist)
+                password_hash = password
+            if role_value == Role.ADMIN.value:
+                loaded_users[username] = Admin(user_id or len(loaded_users) + 1, username, password_hash, wishlist)
+            else:
+                loaded_users[username] = User(user_id or len(loaded_users) + 1, username, password_hash, Role.USER, wishlist)
     return loaded_users
 
 
@@ -149,8 +155,8 @@ def initialize_users(filepath):
     users = load_users_from_csv(filepath)
     if not users:
         users = {
-            "user": User(1, "user", "1234", Role.USER, []),
-            "admin": Admin(2, "admin", "admin123", []),
+            "user": User(1, "user", generate_password_hash("1234"), Role.USER, []),
+            "admin": Admin(2, "admin", generate_password_hash("admin123"), []),
         }
         save_users_to_csv(filepath, users)
 
@@ -332,8 +338,9 @@ def signup():
     # Generate a new unique user ID
     next_id = max((user.user_id for user in users.values()), default=0) + 1
 
-    # Create and store the new user
-    users[username] = User(next_id, username, password, Role.USER, [])
+    # Create and store the new user with hashing
+    password_hash = generate_password_hash(password)
+    users[username] = User(next_id, username, password_hash, Role.USER, [])
 
     # Update users in CSV File
     save_users_to_csv(users_csv_path, users)
@@ -344,20 +351,8 @@ def signup():
 
 @app.route("/logout")
 def logout():
-    username = session.get("username")
-    if username and username in users:
-        users[username].logout()
     session.clear()
-    return redirect(url_for("login"))
-
-
-@app.route("/api/wishlist")
-def get_wishlist():
-    if "username" not in session or session.get("role") == Role.GUEST.value:
-        return jsonify({"error": "Not logged in or guest account"}), 401
-    ids = session.get("wishlist", [])
-    watches = [w.get_details() for wid in ids if (w := catalogue.get_watch(wid))]
-    return jsonify({"watches": watches})
+    return redirect(url_for("login", message="Logged out successfully."))
 
 
 @app.route("/api/wishlist/<int:watch_id>", methods=["POST"])
