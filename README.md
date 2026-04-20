@@ -4,7 +4,8 @@
 
 A full-stack web application built with Python Flask that provides a comprehensive platform for browsing and managing a luxury watch catalogue. This application enables users to explore an extensive collection of watches, manage personal wishlists, and receive personalized recommendations, while administrators can oversee and maintain the catalogue.
 
-## Note
+## Tream project Notice
+This was a collaborative university group project completed with 5 team members. My personal contributions are below
 
 Product images were removed due to copyright considerations. The application functionality remains fully intact. I will be adding images to fix this shortly. 
 
