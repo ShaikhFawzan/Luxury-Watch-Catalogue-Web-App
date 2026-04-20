@@ -3,6 +3,7 @@ from enum import Enum
 
 # Keeps the user roles clear and easy to check.
 class Role(Enum):
+    GUEST = "GUEST"
     USER = "USER"
     ADMIN = "ADMIN"
 
@@ -141,28 +142,23 @@ class Catalogue:
         return results
 
 
-# Tracks who is currently logged in.
-class SessionManager:
-    def __init__(self):
-        self.current_user = None
+class Review:
+    def __init__(self, review_id, watch_id, username, rating, title, body, timestamp):
+        self.review_id = review_id
+        self.watch_id = watch_id
+        self.username = username
+        self.rating = rating        # int 1–5
+        self.title = title
+        self.body = body
+        self.timestamp = timestamp  # ISO string
 
-    def login(self, user, username, password):
-        success = user.login(username, password)
-        if success:
-            self.current_user = user
-        return success
-
-    def logout(self):
-        if self.current_user is not None:
-            self.current_user.logout()
-            self.current_user = None
-
-    def get_current_user(self):
-        return self.current_user
-
-    def is_admin_logged_in(self):
-        return (
-            self.current_user is not None
-            and self.current_user.is_logged_in()
-            and self.current_user.role == Role.ADMIN
-        )
+    def to_dict(self):
+        return {
+            "review_id": self.review_id,
+            "watch_id": self.watch_id,
+            "username": self.username,
+            "rating": self.rating,
+            "title": self.title,
+            "body": self.body,
+            "timestamp": self.timestamp,
+        }

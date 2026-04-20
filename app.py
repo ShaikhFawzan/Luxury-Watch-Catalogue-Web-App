@@ -1,15 +1,18 @@
 import csv
 import os
 import re
+from datetime import datetime, timezone
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
-from backend import Role, Watch, User, Admin, Catalogue, SessionManager
+from backend import Role, Watch, User, Admin, Catalogue, Review
 
 app = Flask(__name__)
-app.secret_key = "watch-catalogue-secret-key"
+app.secret_key = os.environ.get("SECRET_KEY", "dev-key")
 
 # Backend setup
 catalogue = Catalogue()
 users = {}
+# reviews: {watch_id: [Review, ...]}
+reviews: dict[int, list] = {}
 
 
 def load_watches_from_csv(filepath):
@@ -109,6 +112,38 @@ def save_users_to_csv(filepath, users_dict):
             })
 
 
+def load_reviews_from_csv(filepath):
+    if not os.path.exists(filepath):
+        return
+    with open(filepath, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            try:
+                review = Review(
+                    review_id=int(row["review_id"]),
+                    watch_id=int(row["watch_id"]),
+                    username=row["username"].strip(),
+                    rating=int(row["rating"]),
+                    title=row["title"].strip(),
+                    body=row["body"].strip(),
+                    timestamp=row["timestamp"].strip(),
+                )
+                reviews.setdefault(review.watch_id, []).append(review)
+            except (KeyError, ValueError):
+                continue
+
+
+def save_reviews_to_csv(filepath):
+    fieldnames = ["review_id", "watch_id", "username", "rating", "title", "body", "timestamp"]
+    all_reviews = [r for bucket in reviews.values() for r in bucket]
+    all_reviews.sort(key=lambda r: r.review_id)
+    with open(filepath, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        for r in all_reviews:
+            writer.writerow(r.to_dict())
+
+
 def initialize_users(filepath):
     global users
     users = load_users_from_csv(filepath)
@@ -121,45 +156,89 @@ def initialize_users(filepath):
 
 
 def get_similar_watches(target_watch, all_watches, limit=3):
+    """
+    Find and return a list of watches similar to a given target watch.
+
+    Similarity is determined using a weighted scoring system based on:
+    - Brand (highest priority)
+    - Material
+    - Condition
+    - Price proximity (within 20%)
+
+    Args:
+        target_watch (Watch): The reference watch to compare against.
+        all_watches (list[Watch]): List of all available watches.
+        limit (int): Maximum number of similar watches to return.
+
+    Returns:
+        list[Watch]: A list of the most similar watches, sorted by relevance.
+                    Returns an empty list if no similar watches are found.
+    """
+
+    # Return empty list if no target is provided
     if target_watch is None:
         return []
 
+    # Normalize target attributes for consistent comparison
     target_brand = (target_watch.brand or "").strip().lower()
     target_material = (target_watch.material or "").strip().lower()
     target_condition = (target_watch.condition or "").strip().lower()
     target_price = target_watch.price or 0.0
 
     scored_watches = []
+
+    # Iterate through all watches to compute similarity scores
     for watch in all_watches:
+
+        # Skip comparing the watch with itself
         if watch.watch_id == target_watch.watch_id:
             continue
 
         score = 0
+
+        # Brand match (highest weight)
         if target_brand and (watch.brand or "").strip().lower() == target_brand:
             score += 100
+        # Material match
         if target_material and (watch.material or "").strip().lower() == target_material:
             score += 40
+        # Condition match
         if target_condition and (watch.condition or "").strip().lower() == target_condition:
             score += 20
 
+        # Price similarity (within ±20% range)
         if target_price > 0 and watch.price is not None:
             price_diff = abs(watch.price - target_price)
+
             if price_diff <= target_price * 0.2:
+                # Base score for being within range
                 score += 10
-                score += max(0, int((target_price * 0.2 - price_diff) / (target_price * 0.02)))
 
+                # Bonus score: closer prices get higher points
+                score += max(
+                    0,
+                    int((target_price * 0.2 - price_diff) / (target_price * 0.02))
+                )
+
+        # Only include watches that have some similarity
         if score > 0:
-                scored_watches.append((score, watch))
+            scored_watches.append((score, watch))
 
+    # Sort watches by:
+    # 1. Highest score (descending)
+    # 2. Watch ID (ascending) to ensure consistent ordering
     scored_watches.sort(key=lambda item: (-item[0], item[1].watch_id))
+
+    # Return only the top 'limit' watches (limit = 3)
     return [watch for _, watch in scored_watches[:limit]]
 
-
-# Load watches and users from CSV
-csv_path = os.path.join(os.path.dirname(__file__), "watches.csv")
-users_csv_path = os.path.join(os.path.dirname(__file__), "users.csv")
+# Load watches, users, and reviews from CSV
+csv_path = os.path.join(os.path.dirname(__file__), "data", "watches.csv")
+users_csv_path = os.path.join(os.path.dirname(__file__), "data", "users.csv")
+reviews_csv_path = os.path.join(os.path.dirname(__file__), "data", "reviews.csv")
 load_watches_from_csv(csv_path)
 initialize_users(users_csv_path)
+load_reviews_from_csv(reviews_csv_path)
 
 
 @app.route("/")
@@ -174,6 +253,14 @@ def login():
     if request.method == "POST":
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "").strip()
+        guest = request.form.get("guest")
+
+        # Guest login
+        if guest:
+            session["username"] = "Guest"
+            session["role"] = Role.GUEST.value
+            session["wishlist"] = []
+            return redirect(url_for("catalogue_page"))
 
         user = users.get(username)
         if user is None:
@@ -193,11 +280,28 @@ def login():
 
 @app.route("/signup", methods=["POST"])
 def signup():
+    """
+    Handle user signup form submission.
+
+    This route:
+    - Retrieves and validates user input (username and password)
+    - Enforces password strength requirements
+    - Prevents duplicate usernames
+    - Creates and stores a new user if validation passes
+
+    Returns:
+        Response:
+            - Renders the login page with errors if validation fails
+            - Redirects to login page with success message if signup succeeds
+    """
+
+    # Retrieve and remove extra spaces from inputs
     username = request.form.get("username", "").strip()
     password = request.form.get("password", "").strip()
 
     errors = {}
 
+    # Basic validation checks
     if not username:
         errors["username"] = "Username is required."
     if not password:
@@ -205,7 +309,7 @@ def signup():
     if username in users:
         errors["username"] = "That username is already taken."
 
-    # Password restrictions
+    # Password requirements
     if password:
         if len(password) < 8:
             errors["password"] = "Password must be at least 8 characters."
@@ -216,18 +320,25 @@ def signup():
         elif not re.search(r"\d", password):
             errors["password"] = "Password must include at least one number."
 
+    # If validation fails, re-render signup form with error messages
     if errors:
         return render_template(
             "login.html",
-            show_signup=True,
+            show_signup=True,   # ensures signup form is displayed
             errors=errors,
-            username=username
+            username=username  # preserves user input for username
         )
 
+    # Generate a new unique user ID
     next_id = max((user.user_id for user in users.values()), default=0) + 1
+
+    # Create and store the new user
     users[username] = User(next_id, username, password, Role.USER, [])
+
+    # Update users in CSV File
     save_users_to_csv(users_csv_path, users)
 
+    # Redirect to login page with success message
     return redirect(url_for("login", message="Account created successfully. Please sign in."))
 
 
@@ -242,8 +353,8 @@ def logout():
 
 @app.route("/api/wishlist")
 def get_wishlist():
-    if "username" not in session:
-        return jsonify({"error": "Not logged in"}), 401
+    if "username" not in session or session.get("role") == Role.GUEST.value:
+        return jsonify({"error": "Not logged in or guest account"}), 401
     ids = session.get("wishlist", [])
     watches = [w.get_details() for wid in ids if (w := catalogue.get_watch(wid))]
     return jsonify({"watches": watches})
@@ -251,8 +362,8 @@ def get_wishlist():
 
 @app.route("/api/wishlist/<int:watch_id>", methods=["POST"])
 def add_to_wishlist(watch_id):
-    if "username" not in session:
-        return jsonify({"error": "Not logged in"}), 401
+    if "username" not in session or session.get("role") == Role.GUEST.value:
+        return jsonify({"error": "Not logged in or guest account"}), 401
     if not catalogue.get_watch(watch_id):
         return jsonify({"error": "Watch not found"}), 404
     wishlist = session.get("wishlist", [])
@@ -268,8 +379,8 @@ def add_to_wishlist(watch_id):
 
 @app.route("/api/wishlist/<int:watch_id>", methods=["DELETE"])
 def remove_from_wishlist(watch_id):
-    if "username" not in session:
-        return jsonify({"error": "Not logged in"}), 401
+    if "username" not in session or session.get("role") == Role.GUEST.value:
+        return jsonify({"error": "Not logged in or guest account"}), 401
     wishlist = session.get("wishlist", [])
     if watch_id in wishlist:
         wishlist.remove(watch_id)
@@ -283,9 +394,32 @@ def remove_from_wishlist(watch_id):
 
 @app.route("/catalogue")
 def catalogue_page():
+    """
+    Display the watch catalogue page with support for:
+    - Search (by query)
+    - Filtering (brand, material, condition, price range)
+    - Sorting (price, brand, condition)
+    - Pagination
+
+    This route:
+    - Ensures the user is authenticated
+    - Retrieves query parameters from the request
+    - Applies search OR filtering logic
+    - Applies sorting on the resulting dataset
+    - Paginates results for display
+    - Prepares data for dropdown filters and UI rendering
+
+    Returns:
+        Response:
+            - Redirects to login page if user is not authenticated
+            - Renders catalogue.html with paginated watch data and UI state
+    """
+
+    # Ensure user is logged in before accessing catalogue
     if "username" not in session:
         return redirect(url_for("login"))
 
+    # Retrieve query parameters (search, filters, sorting)
     query = request.args.get("q", "").strip()
     brand = request.args.get("brand", "").strip()
     material = request.args.get("material", "").strip()
@@ -294,6 +428,7 @@ def catalogue_page():
     max_price = request.args.get("max_price", "").strip()
     sort_by = request.args.get("sort", "").strip()
 
+    # Apply search OR filtering logic (search takes priority)
     if query:
         watches = catalogue.search_watches(query)
     elif brand or material or condition or min_price or max_price:
@@ -305,9 +440,10 @@ def catalogue_page():
             max_price=float(max_price) if max_price else None,
         )
     else:
+        # Default: return all watches
         watches = catalogue.get_all_watches()
 
-    # Apply sorting
+    # Apply sorting to the resulting dataset
     sorted_watches = watches.copy()
     if sort_by == "price_low":
         sorted_watches.sort(key=lambda w: w.price)
@@ -320,23 +456,32 @@ def catalogue_page():
     elif sort_by == "condition":
         sorted_watches.sort(key=lambda w: w.condition.lower())
 
-    # Pagination
+    # Pagination logic
     page = request.args.get("page", 1, type=int)
-    per_page = 24
+    per_page = 24  # number of items per page
+
     total = len(sorted_watches)
     total_pages = max(1, (total + per_page - 1) // per_page)
-    page = max(1, min(page, total_pages))
-    paginated = sorted_watches[(page - 1) * per_page : page * per_page]
 
-    # Collect unique values for filter dropdowns.
+    # Ensure page number stays within valid bounds
+    page = max(1, min(page, total_pages))
+
+    # Slice dataset for current page
+    start = (page - 1) * per_page
+    paginated = sorted_watches[start : start + per_page]
+
+
+    # Collect unique values for filter dropdowns (from full dataset)
     all_watches = catalogue.get_all_watches()
     brands = sorted(set(w.brand for w in all_watches))
     materials = sorted(set(w.material for w in all_watches))
     conditions = sorted(set(w.condition for w in all_watches))
 
+    # User-related UI state
     is_admin = session.get("role") == "ADMIN"
     wishlist_ids = session.get("wishlist", [])
 
+    # Render catalogue page with all required data
     return render_template(
         "catalogue.html",
         watches=paginated,
@@ -358,7 +503,6 @@ def catalogue_page():
         wishlist_ids=wishlist_ids,
         wishlist_count=len(wishlist_ids),
     )
-
 
 @app.route("/api/watch/<int:watch_id>")
 def get_watch(watch_id):
@@ -434,5 +578,93 @@ def delete_watch(watch_id):
         return jsonify({"error": str(e)}), 400
 
 
+@app.route("/api/reviews/<int:watch_id>")
+def get_reviews(watch_id):
+    if "username" not in session:
+        return jsonify({"error": "Not logged in"}), 401
+    bucket = reviews.get(watch_id, [])
+    bucket_sorted = sorted(bucket, key=lambda r: r.timestamp, reverse=True)
+    current_user = session["username"]
+    user_review = next((r.to_dict() for r in bucket_sorted if r.username == current_user), None)
+    return jsonify({
+        "reviews": [r.to_dict() for r in bucket_sorted],
+        "user_review": user_review,
+        "average_rating": round(sum(r.rating for r in bucket) / len(bucket), 1) if bucket else None,
+        "is_guest": session.get("role") == Role.GUEST.value,
+    })
+
+
+@app.route("/api/reviews/<int:watch_id>", methods=["POST"])
+def submit_review(watch_id):
+    if "username" not in session:
+        return jsonify({"error": "Not logged in"}), 401
+    if session.get("role") == Role.GUEST.value:
+        return jsonify({"error": "Guest accounts cannot submit reviews"}), 403
+    if not catalogue.get_watch(watch_id):
+        return jsonify({"error": "Watch not found"}), 404
+
+    data = request.get_json()
+    rating = data.get("rating")
+    title = (data.get("title") or "").strip()
+    body = (data.get("body") or "").strip()
+
+    if not isinstance(rating, int) or not (1 <= rating <= 5):
+        return jsonify({"error": "Rating must be 1–5."}), 400
+    if not title:
+        return jsonify({"error": "Title is required."}), 400
+    if not body:
+        return jsonify({"error": "Review body is required."}), 400
+
+    username = session["username"]
+    bucket = reviews.setdefault(watch_id, [])
+
+    # One review per user per watch — update if exists
+    existing = next((r for r in bucket if r.username == username), None)
+    if existing:
+        existing.rating = rating
+        existing.title = title
+        existing.body = body
+        existing.timestamp = datetime.now(timezone.utc).isoformat()
+        save_reviews_to_csv(reviews_csv_path)
+        return jsonify({"success": True, "review": existing.to_dict(), "updated": True})
+
+    next_id = max((r.review_id for bucket in reviews.values() for r in bucket), default=0) + 1
+    review = Review(
+        review_id=next_id,
+        watch_id=watch_id,
+        username=username,
+        rating=rating,
+        title=title,
+        body=body,
+        timestamp=datetime.now(timezone.utc).isoformat(),
+    )
+    bucket.append(review)
+    save_reviews_to_csv(reviews_csv_path)
+    return jsonify({"success": True, "review": review.to_dict(), "updated": False})
+
+
+@app.route("/api/reviews/<int:watch_id>", methods=["DELETE"])
+def delete_review(watch_id):
+    if "username" not in session:
+        return jsonify({"error": "Not logged in"}), 401
+    if session.get("role") == Role.GUEST.value:
+        return jsonify({"error": "Guest accounts cannot delete reviews"}), 403
+
+    username = session["username"]
+    is_admin = session.get("role") == "ADMIN"
+    review_id = request.args.get("review_id", type=int)
+
+    bucket = reviews.get(watch_id, [])
+    for i, r in enumerate(bucket):
+        if r.review_id == review_id:
+            if r.username != username and not is_admin:
+                return jsonify({"error": "Cannot delete another user's review."}), 403
+            bucket.pop(i)
+            save_reviews_to_csv(reviews_csv_path)
+            return jsonify({"success": True})
+    return jsonify({"error": "Review not found."}), 404
+
+
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=False, host="0.0.0.0", port=port)

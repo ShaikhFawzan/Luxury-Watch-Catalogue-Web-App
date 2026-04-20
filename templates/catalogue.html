@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,11 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -147,7 +152,9 @@
             box-shadow: 0 0 0 3px rgba(184, 148, 81, 0.08);
         }
 
-        .search-bar input::placeholder { color: #555; }
+        .search-bar input::placeholder {
+            color: #555;
+        }
 
         .search-icon {
             position: absolute;
@@ -183,8 +190,15 @@
             margin-bottom: 16px;
         }
 
-        .filters-toggle:hover { border-color: rgba(184, 148, 81, 0.3); color: #b89451; }
-        .filters-toggle.active { border-color: #b89451; color: #b89451; }
+        .filters-toggle:hover {
+            border-color: rgba(184, 148, 81, 0.3);
+            color: #b89451;
+        }
+
+        .filters-toggle.active {
+            border-color: #b89451;
+            color: #b89451;
+        }
 
         .filters-panel {
             display: none;
@@ -197,7 +211,9 @@
             margin-bottom: 8px;
         }
 
-        .filters-panel.open { display: flex; }
+        .filters-panel.open {
+            display: flex;
+        }
 
         .filter-group {
             display: flex;
@@ -232,7 +248,10 @@
             border-color: #b89451;
         }
 
-        .filter-group select option { background: #1a1a1a; color: #ddd; }
+        .filter-group select option {
+            background: #1a1a1a;
+            color: #ddd;
+        }
 
         .filter-actions {
             display: flex;
@@ -255,7 +274,9 @@
             transition: all 0.2s;
         }
 
-        .filter-apply:hover { background: linear-gradient(135deg, #d4a95a, #e8bd6e); }
+        .filter-apply:hover {
+            background: linear-gradient(135deg, #d4a95a, #e8bd6e);
+        }
 
         .filter-clear {
             padding: 10px 16px;
@@ -270,7 +291,10 @@
             transition: all 0.2s;
         }
 
-        .filter-clear:hover { border-color: rgba(255, 255, 255, 0.2); color: #bbb; }
+        .filter-clear:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #bbb;
+        }
 
         /* ── Watch Grid ── */
         .catalogue-section {
@@ -291,7 +315,10 @@
             color: #666;
         }
 
-        .watch-count span { color: #b89451; font-weight: 500; }
+        .watch-count span {
+            color: #b89451;
+            font-weight: 500;
+        }
 
         .sort-container {
             display: flex;
@@ -477,7 +504,9 @@
             padding: 20px;
         }
 
-        .modal-overlay.open { display: flex; }
+        .modal-overlay.open {
+            display: flex;
+        }
 
         .modal {
             background: #141414;
@@ -492,8 +521,15 @@
         }
 
         @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.95) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         .modal-header {
@@ -531,7 +567,9 @@
             color: #fff;
         }
 
-        .modal-body { padding: 28px; }
+        .modal-body {
+            padding: 28px;
+        }
 
         .detail-grid {
             display: grid;
@@ -545,8 +583,12 @@
             gap: 4px;
         }
 
-        .detail-item.full { grid-column: 1 / -1; }
+        .detail-item.full {
+            grid-column: 1 / -1;
+        }
 
+        /* Similar Watches Recommendation Section
+   Styles the layout and appearance of recommended watches shown on a product page */
         .similar-section {
             grid-column: 1 / -1;
             margin-top: 24px;
@@ -554,6 +596,7 @@
             border-top: 1px solid rgba(255, 255, 255, 0.08);
         }
 
+        /* Section title */
         .similar-section h3 {
             margin: 0 0 14px;
             font-size: 16px;
@@ -561,11 +604,13 @@
             font-weight: 500;
         }
 
+        /* Grid layout for similar watch items */
         .similar-grid {
             display: grid;
             gap: 12px;
         }
 
+        /* Individual watch card */
         .similar-item {
             display: flex;
             justify-content: space-between;
@@ -577,11 +622,13 @@
             border-radius: 14px;
         }
 
+        /* Watch info (brand + name) */
         .similar-meta {
             display: grid;
             gap: 4px;
         }
 
+        /* Brand styling */
         .similar-brand {
             font-size: 11px;
             letter-spacing: 1.5px;
@@ -590,12 +637,14 @@
             font-weight: 600;
         }
 
+        /* Watch name */
         .similar-name {
             font-size: 14px;
             color: #e0e0e0;
             line-height: 1.3;
         }
 
+        /* Price display */
         .similar-price {
             font-family: 'Playfair Display', serif;
             font-size: 16px;
@@ -645,7 +694,9 @@
             transition: all 0.2s;
         }
 
-        .btn-edit:hover { background: rgba(184, 148, 81, 0.2); }
+        .btn-edit:hover {
+            background: rgba(184, 148, 81, 0.2);
+        }
 
         .btn-delete {
             padding: 10px 24px;
@@ -662,7 +713,9 @@
             transition: all 0.2s;
         }
 
-        .btn-delete:hover { background: rgba(220, 53, 69, 0.15); }
+        .btn-delete:hover {
+            background: rgba(220, 53, 69, 0.15);
+        }
 
         /* ── Add/Edit Form Modal ── */
         .form-grid {
@@ -671,8 +724,15 @@
             gap: 16px;
         }
 
-        .form-grid .form-group { display: flex; flex-direction: column; gap: 6px; }
-        .form-grid .form-group.full { grid-column: 1 / -1; }
+        .form-grid .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-grid .form-group.full {
+            grid-column: 1 / -1;
+        }
 
         .form-grid label {
             font-size: 10px;
@@ -682,7 +742,8 @@
             font-weight: 500;
         }
 
-        .form-grid input, .form-grid select {
+        .form-grid input,
+        .form-grid select {
             padding: 12px 14px;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -693,7 +754,8 @@
             transition: all 0.2s;
         }
 
-        .form-grid input:focus, .form-grid select:focus {
+        .form-grid input:focus,
+        .form-grid select:focus {
             outline: none;
             border-color: #b89451;
             background: rgba(184, 148, 81, 0.04);
@@ -727,7 +789,7 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            background: rgba(10,10,10,0.6);
+            background: rgba(10, 10, 10, 0.6);
             border: none;
             border-radius: 50%;
             width: 34px;
@@ -741,9 +803,19 @@
             z-index: 2;
             line-height: 1;
         }
-        .heart-btn:hover { transform: scale(1.2); background: rgba(30,30,30,0.9); }
-        .heart-btn.active { color: #e74c3c; }
-        .heart-btn:not(.active) { color: #666; }
+
+        .heart-btn:hover {
+            transform: scale(1.2);
+            background: rgba(30, 30, 30, 0.9);
+        }
+
+        .heart-btn.active {
+            color: #e74c3c;
+        }
+
+        .heart-btn:not(.active) {
+            color: #666;
+        }
 
         /* ── Compare Checkbox ── */
         .compare-btn {
@@ -758,13 +830,24 @@
             transition: all 0.2s;
             text-transform: uppercase;
         }
-        .compare-btn:hover { border-color: #b89451; color: #b89451; }
-        .compare-btn.active { border-color: #b89451; color: #b89451; background: rgba(184,148,81,0.12); }
+
+        .compare-btn:hover {
+            border-color: #b89451;
+            color: #b89451;
+        }
+
+        .compare-btn.active {
+            border-color: #b89451;
+            color: #b89451;
+            background: rgba(184, 148, 81, 0.12);
+        }
 
         /* ── Compare Bar ── */
         .compare-bar {
             position: fixed;
-            bottom: 0; left: 0; right: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
             background: #111;
             border-top: 1px solid #b89451;
             padding: 12px 24px;
@@ -775,12 +858,17 @@
             transform: translateY(100%);
             transition: transform 0.3s ease;
         }
-        .compare-bar.visible { transform: translateY(0); }
+
+        .compare-bar.visible {
+            transform: translateY(0);
+        }
+
         .compare-bar-items {
             display: flex;
             gap: 12px;
             flex: 1;
         }
+
         .compare-chip {
             display: flex;
             align-items: center;
@@ -792,6 +880,7 @@
             font-size: 12px;
             max-width: 180px;
         }
+
         .compare-chip-img {
             width: 32px;
             height: 32px;
@@ -800,6 +889,7 @@
             background: #fff;
             flex-shrink: 0;
         }
+
         .compare-chip-name {
             overflow: hidden;
             text-overflow: ellipsis;
@@ -807,6 +897,7 @@
             color: #e0e0e0;
             font-size: 11px;
         }
+
         .compare-chip-remove {
             background: none;
             border: none;
@@ -816,8 +907,17 @@
             padding: 0 2px;
             flex-shrink: 0;
         }
-        .compare-chip-remove:hover { color: #ff6b7a; }
-        .compare-bar-actions { display: flex; gap: 10px; align-items: center; }
+
+        .compare-chip-remove:hover {
+            color: #ff6b7a;
+        }
+
+        .compare-bar-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
         .compare-now-btn {
             background: linear-gradient(135deg, #b89451, #d4a95a);
             border: none;
@@ -830,8 +930,16 @@
             letter-spacing: 0.5px;
             transition: opacity 0.2s;
         }
-        .compare-now-btn:hover { opacity: 0.85; }
-        .compare-now-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .compare-now-btn:hover {
+            opacity: 0.85;
+        }
+
+        .compare-now-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
         .compare-clear-btn {
             background: none;
             border: 1px solid #444;
@@ -842,7 +950,11 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        .compare-clear-btn:hover { border-color: #ff6b7a; color: #ff6b7a; }
+
+        .compare-clear-btn:hover {
+            border-color: #ff6b7a;
+            color: #ff6b7a;
+        }
 
         /* ── Wishlist Nav Badge ── */
         .nav-wishlist-btn {
@@ -858,7 +970,12 @@
             gap: 6px;
             transition: all 0.2s;
         }
-        .nav-wishlist-btn:hover { border-color: #b89451; color: #b89451; }
+
+        .nav-wishlist-btn:hover {
+            border-color: #b89451;
+            color: #b89451;
+        }
+
         .wishlist-badge {
             background: #e74c3c;
             color: #fff;
@@ -875,14 +992,17 @@
             max-width: 900px;
             width: 95vw;
         }
+
         .compare-table-wrap {
             overflow-x: auto;
         }
+
         .compare-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
         }
+
         .compare-table th {
             padding: 10px 14px;
             text-align: center;
@@ -893,6 +1013,7 @@
             font-size: 11px;
             text-transform: uppercase;
         }
+
         .compare-table td {
             padding: 10px 14px;
             text-align: center;
@@ -900,7 +1021,11 @@
             color: #e0e0e0;
             vertical-align: middle;
         }
-        .compare-table tr:last-child td { border-bottom: none; }
+
+        .compare-table tr:last-child td {
+            border-bottom: none;
+        }
+
         .compare-table td.row-label {
             text-align: left;
             color: #888;
@@ -909,7 +1034,11 @@
             letter-spacing: 0.5px;
             white-space: nowrap;
         }
-        .compare-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+        .compare-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
         .compare-table .watch-img-cell img {
             width: 80px;
             height: 80px;
@@ -918,28 +1047,35 @@
             background: #fff;
             padding: 4px;
         }
+
         .compare-table .price-cell {
             color: #b89451;
             font-weight: 600;
             font-size: 15px;
         }
+
         .compare-table th.remove-col {
             color: #444;
             cursor: pointer;
         }
-        .compare-table th.remove-col:hover { color: #ff6b7a; }
+
+        .compare-table th.remove-col:hover {
+            color: #ff6b7a;
+        }
 
         /* ── Wishlist Modal ── */
         .wishlist-modal .modal {
             max-width: 800px;
             width: 95vw;
         }
+
         .wishlist-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 16px;
             margin-top: 4px;
         }
+
         .wishlist-item {
             background: #111;
             border: 1px solid #222;
@@ -949,7 +1085,12 @@
             transition: border-color 0.2s, transform 0.2s;
             position: relative;
         }
-        .wishlist-item:hover { border-color: #b89451; transform: translateY(-2px); }
+
+        .wishlist-item:hover {
+            border-color: #b89451;
+            transform: translateY(-2px);
+        }
+
         .wishlist-item img {
             width: 100%;
             height: 140px;
@@ -957,26 +1098,276 @@
             background: #fff;
             padding: 8px;
         }
-        .wishlist-item-body { padding: 10px 12px; }
-        .wishlist-item-brand { font-size: 10px; color: #b89451; text-transform: uppercase; letter-spacing: 1px; }
-        .wishlist-item-name { font-size: 13px; color: #e0e0e0; margin: 4px 0 6px; line-height: 1.3; }
-        .wishlist-item-price { font-size: 14px; color: #b89451; font-weight: 600; }
+
+        .wishlist-item-body {
+            padding: 10px 12px;
+        }
+
+        .wishlist-item-brand {
+            font-size: 10px;
+            color: #b89451;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .wishlist-item-name {
+            font-size: 13px;
+            color: #e0e0e0;
+            margin: 4px 0 6px;
+            line-height: 1.3;
+        }
+
+        .wishlist-item-price {
+            font-size: 14px;
+            color: #b89451;
+            font-weight: 600;
+        }
+
         .wishlist-item-remove {
             position: absolute;
-            top: 8px; right: 8px;
-            background: rgba(10,10,10,0.7);
+            top: 8px;
+            right: 8px;
+            background: rgba(10, 10, 10, 0.7);
             border: none;
             border-radius: 50%;
-            width: 28px; height: 28px;
+            width: 28px;
+            height: 28px;
             cursor: pointer;
             color: #ff6b7a;
             font-size: 14px;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: background 0.2s;
         }
-        .wishlist-item-remove:hover { background: rgba(220,53,69,0.2); }
-        .wishlist-empty { text-align: center; color: #555; padding: 40px 0; font-size: 14px; }
-        .wishlist-empty .icon { font-size: 40px; margin-bottom: 12px; }
+
+        .wishlist-item-remove:hover {
+            background: rgba(220, 53, 69, 0.2);
+        }
+
+        .wishlist-empty {
+            text-align: center;
+            color: #555;
+            padding: 40px 0;
+            font-size: 14px;
+        }
+
+        .wishlist-empty .icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        /* ── Reviews ── */
+        .reviews-section {
+            margin-top: 24px;
+            border-top: 1px solid #222;
+            padding-top: 20px;
+        }
+
+        .reviews-section h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            color: #e0e0e0;
+            margin-bottom: 4px;
+        }
+
+        .reviews-avg {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .stars-display {
+            color: #b89451;
+            font-size: 16px;
+            letter-spacing: 1px;
+        }
+
+        .stars-display.sm {
+            font-size: 13px;
+        }
+
+        .avg-label {
+            font-size: 13px;
+            color: #888;
+        }
+
+        /* Star picker */
+        .star-picker {
+            display: flex;
+            gap: 6px;
+            margin: 8px 0 16px;
+        }
+
+        .star-picker span {
+            font-size: 28px;
+            cursor: pointer;
+            color: #333;
+            transition: color 0.15s, transform 0.1s;
+            line-height: 1;
+        }
+
+        .star-picker span.lit {
+            color: #b89451;
+        }
+
+        .star-picker span:hover {
+            transform: scale(1.2);
+        }
+
+        /* Review form */
+        .review-form {
+            margin-top: 12px;
+        }
+
+        .review-form input,
+        .review-form textarea {
+            width: 100%;
+            background: #111;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            padding: 10px 14px;
+            margin-bottom: 10px;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+
+        .review-form input:focus,
+        .review-form textarea:focus {
+            outline: none;
+            border-color: #b89451;
+        }
+
+        .review-form textarea {
+            min-height: 80px;
+        }
+
+        .review-form label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .review-submit-btn {
+            background: linear-gradient(135deg, #b89451, #d4a95a);
+            border: none;
+            border-radius: 8px;
+            color: #0a0a0a;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 10px 24px;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: opacity 0.2s;
+        }
+
+        .review-submit-btn:hover {
+            opacity: 0.85;
+        }
+
+        /* Review cards */
+        .review-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+            max-height: 320px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .review-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .review-list::-webkit-scrollbar-track {
+            background: #111;
+        }
+
+        .review-list::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 2px;
+        }
+
+        .review-card {
+            background: #111;
+            border: 1px solid #1e1e1e;
+            border-radius: 10px;
+            padding: 14px 16px;
+            position: relative;
+        }
+
+        .review-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 6px;
+            gap: 8px;
+        }
+
+        .review-card-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .review-card-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #e0e0e0;
+        }
+
+        .review-card-author {
+            font-size: 11px;
+            color: #555;
+        }
+
+        .review-card-body {
+            font-size: 13px;
+            color: #aaa;
+            line-height: 1.5;
+            margin-top: 6px;
+        }
+
+        .review-delete-btn {
+            background: none;
+            border: none;
+            color: #444;
+            cursor: pointer;
+            font-size: 13px;
+            padding: 2px 4px;
+            border-radius: 4px;
+            flex-shrink: 0;
+            transition: color 0.2s;
+        }
+
+        .review-delete-btn:hover {
+            color: #ff6b7a;
+        }
+
+        .your-review-badge {
+            font-size: 10px;
+            background: rgba(184, 148, 81, 0.15);
+            color: #b89451;
+            border: 1px solid rgba(184, 148, 81, 0.3);
+            border-radius: 4px;
+            padding: 2px 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .no-reviews {
+            color: #444;
+            font-size: 13px;
+            text-align: center;
+            padding: 16px 0;
+        }
 
         .toast-container {
             position: fixed;
@@ -1010,13 +1401,26 @@
         }
 
         @keyframes toastIn {
-            from { opacity: 0; transform: translateX(40px); }
-            to { opacity: 1; transform: translateX(0); }
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         @keyframes toastOut {
-            from { opacity: 1; }
-            to { opacity: 0; transform: translateY(-10px); }
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
         }
 
         /* ── Empty State ── */
@@ -1026,7 +1430,11 @@
             color: #555;
         }
 
-        .empty-state .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.3; }
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
 
         .empty-state h3 {
             font-family: 'Playfair Display', serif;
@@ -1082,29 +1490,63 @@
         }
 
         /* ── Scrollbar ── */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(184, 148, 81, 0.2); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(184, 148, 81, 0.35); }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(184, 148, 81, 0.2);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(184, 148, 81, 0.35);
+        }
     </style>
 </head>
+
 <body>
 
-    <!-- Navbar -->
+    <!-- Navbar: Displays branding, user info, wishlist access, and logout button -->
     <nav class="navbar">
+
+        <!-- App title linking back to catalogue -->
         <a class="nav-brand" href="{{ url_for('catalogue_page') }}">
-            <span class="nav-brand-icon">&#9201;</span>
+            <span class="nav-brand-icon">&#9201;</span> <!-- Clock icon -->
             <h1>Watch Catalogue</h1>
         </a>
+
+        <!-- Right-side navigation (user actions and info) -->
         <div class="nav-right">
+
+            <!-- Wishlist button (hidden for guest users) -->
+            {% if session['role'] != 'GUEST' %}
             <button class="nav-wishlist-btn" onclick="openWishlistModal()">
-                &#9829; Wishlist
-                <span class="wishlist-badge" id="wishlistBadge" {% if wishlist_count == 0 %}style="display:none"{% endif %}>{{ wishlist_count }}</span>
+                &#9829; Wishlist <!-- displays a heart icon and 'Wishlist' -->
+
+                <!-- Wishlist item count badge (hidden if empty) -->
+                <span class="wishlist-badge" id="wishlistBadge" {% if wishlist_count==0 %}style="display:none" {% endif
+                    %}>
+                    {{ wishlist_count }}
+                </span>
             </button>
+            {% endif %}
+
+            <!-- Logged-in user information -->
             <div class="nav-user">
                 <strong>{{ username }}</strong>
-                <span class="nav-role">{{ 'Admin' if is_admin else 'User' }}</span>
+
+                <!-- Displays user role dynamically -->
+                <span class="nav-role">
+                    {{ 'Guest' if session['role'] == 'GUEST' else ('Admin' if is_admin else 'User') }}
+                </span>
             </div>
+
+            <!-- Logout button -->
             <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
         </div>
     </nav>
@@ -1115,24 +1557,26 @@
         <p>Browse our curated selection of luxury timepieces</p>
         <form class="search-bar" method="GET" action="{{ url_for('catalogue_page') }}">
             <span class="search-icon">&#128269;</span>
-            <input type="text" name="q" placeholder="Search by name, brand, or certification..." value="{{ query }}">
+            <input type="text" name="q" placeholder="Search by name, brand, or Reference #..." value="{{ query }}">
         </form>
     </section>
 
     <!-- Filters -->
     <section class="filters-section">
-        <button class="filters-toggle {% if sel_brand or sel_material or sel_condition or sel_min_price or sel_max_price %}active{% endif %}"
-                onclick="toggleFilters()">
+        <button
+            class="filters-toggle {% if sel_brand or sel_material or sel_condition or sel_min_price or sel_max_price %}active{% endif %}"
+            onclick="toggleFilters()">
             &#9881; Filters
         </button>
-        <form class="filters-panel {% if sel_brand or sel_material or sel_condition or sel_min_price or sel_max_price %}open{% endif %}"
-              id="filtersPanel" method="GET" action="{{ url_for('catalogue_page') }}">
+        <form
+            class="filters-panel {% if sel_brand or sel_material or sel_condition or sel_min_price or sel_max_price %}open{% endif %}"
+            id="filtersPanel" method="GET" action="{{ url_for('catalogue_page') }}">
             <div class="filter-group">
                 <label>Brand</label>
                 <select name="brand">
                     <option value="">All Brands</option>
                     {% for b in brands %}
-                    <option value="{{ b }}" {% if sel_brand == b %}selected{% endif %}>{{ b }}</option>
+                    <option value="{{ b }}" {% if sel_brand==b %}selected{% endif %}>{{ b }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -1141,7 +1585,7 @@
                 <select name="material">
                     <option value="">All</option>
                     {% for m in materials %}
-                    <option value="{{ m }}" {% if sel_material == m %}selected{% endif %}>{{ m }}</option>
+                    <option value="{{ m }}" {% if sel_material==m %}selected{% endif %}>{{ m }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -1150,7 +1594,7 @@
                 <select name="condition">
                     <option value="">All</option>
                     {% for c in conditions %}
-                    <option value="{{ c }}" {% if sel_condition == c %}selected{% endif %}>{{ c }}</option>
+                    <option value="{{ c }}" {% if sel_condition==c %}selected{% endif %}>{{ c }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -1172,16 +1616,20 @@
     <!-- Catalogue -->
     <section class="catalogue-section">
         <div class="catalogue-header">
-            <div class="watch-count">Showing <span>{{ watches|length }}</span> of <span>{{ total }}</span> timepiece{{ 's' if total != 1 else '' }}</div>
+            <div class="watch-count">Showing <span>{{ watches|length }}</span> of <span>{{ total }}</span> timepiece{{
+                's' if total != 1 else '' }}</div>
             <div class="sort-container">
                 <label for="sort-select">Sort by:</label>
                 <select id="sort-select" onchange="updateSort(this.value)">
                     <option value="" {% if not sel_sort %}selected{% endif %}>Default</option>
-                    <option value="price_low" {% if sel_sort == "price_low" %}selected{% endif %}>Price: Low to High</option>
-                    <option value="price_high" {% if sel_sort == "price_high" %}selected{% endif %}>Price: High to Low</option>
-                    <option value="brand_az" {% if sel_sort == "brand_az" %}selected{% endif %}>Brand: A–Z</option>
-                    <option value="brand_za" {% if sel_sort == "brand_za" %}selected{% endif %}>Brand: Z–A</option>
-                    <option value="condition" {% if sel_sort == "condition" %}selected{% endif %}>Condition</option>
+                    <option value="price_low" {% if sel_sort=="price_low" %}selected{% endif %}>Price: Low to High
+                    </option>
+                    <option value="price_high" {% if sel_sort=="price_high" %}selected{% endif %}>Price: High to Low
+                    </option>
+                    <option value="brand_az" {% if sel_sort=="brand_az" %}selected{% endif %}>Brand: A–Z</option>
+                    <option value="brand_za" {% if sel_sort=="brand_za" %}selected{% endif %}>Brand: Z–A</option>
+                    <option value="condition" {% if sel_sort=="condition" %}selected{% endif %}>Condition: New-Old
+                    </option>
                 </select>
             </div>
             {% if is_admin %}
@@ -1199,12 +1647,14 @@
                     {% else %}
                     <span class="watch-placeholder">&#9201;</span>
                     {% endif %}
+                    {% if session['role'] != 'GUEST' %}
                     <button class="heart-btn {% if watch.watch_id in wishlist_ids %}active{% endif %}"
-                            id="heart-{{ watch.watch_id }}"
-                            onclick="event.stopPropagation(); toggleWishlist({{ watch.watch_id }}, this)"
-                            title="{% if watch.watch_id in wishlist_ids %}Remove from wishlist{% else %}Add to wishlist{% endif %}">
+                        id="heart-{{ watch.watch_id }}"
+                        onclick="event.stopPropagation(); toggleWishlist({{ watch.watch_id }}, this)"
+                        title="{% if watch.watch_id in wishlist_ids %}Remove from wishlist{% else %}Add to wishlist{% endif %}">
                         &#9829;
                     </button>
+                    {% endif %}
                 </div>
                 <div class="watch-card-body">
                     <div class="watch-card-brand">{{ watch.brand }}</div>
@@ -1217,10 +1667,12 @@
                         <span class="watch-price">${{ '{:,.2f}'.format(watch.price) }}</span>
                         <div style="display:flex;gap:6px;">
                             <button class="compare-btn" id="cmp-{{ watch.watch_id }}"
-                                    onclick="event.stopPropagation(); toggleCompare({{ watch.watch_id }}, '{{ watch.name|replace("'","\\'")|replace('"','\\"') }}', '{{ watch.image_url }}', this)">
+                                onclick="event.stopPropagation(); toggleCompare({{ watch.watch_id }}, '{{ watch.name|replace("'","\\'")|replace('"','
+                                \\"') }}', '{{ watch.image_url }}' , this)">
                                 + Compare
                             </button>
-                            <button class="view-details-btn" onclick="event.stopPropagation(); openDetailModal({{ watch.watch_id }})">Details</button>
+                            <button class="view-details-btn"
+                                onclick="event.stopPropagation(); openDetailModal({{ watch.watch_id }})">Details</button>
                         </div>
                     </div>
                 </div>
@@ -1238,22 +1690,25 @@
         {% if total_pages > 1 %}
         <div class="pagination">
             {% if page > 1 %}
-            <a href="?page={{ page - 1 }}&q={{ query }}&brand={{ sel_brand }}&material={{ sel_material }}&condition={{ sel_condition }}&min_price={{ sel_min_price }}&max_price={{ sel_max_price }}" class="page-btn">&laquo; Prev</a>
+            <a href="?page={{ page - 1 }}&q={{ query }}&brand={{ sel_brand }}&material={{ sel_material }}&condition={{ sel_condition }}&min_price={{ sel_min_price }}&max_price={{ sel_max_price }}"
+                class="page-btn">&laquo; Prev</a>
             {% endif %}
 
             {% for p in range(1, total_pages + 1) %}
-                {% if p == page %}
-                <span class="page-btn active">{{ p }}</span>
-                {% elif p <= 3 or p > total_pages - 3 or (p >= page - 2 and p <= page + 2) %}
-                <a href="?page={{ p }}&q={{ query }}&brand={{ sel_brand }}&material={{ sel_material }}&condition={{ sel_condition }}&min_price={{ sel_min_price }}&max_price={{ sel_max_price }}" class="page-btn">{{ p }}</a>
-                {% elif p == 4 or p == total_pages - 3 %}
-                <span class="page-dots">...</span>
-                {% endif %}
-            {% endfor %}
+            {% if p == page %}
+            <span class="page-btn active">{{ p }}</span>
+            {% elif p <= 3 or p> total_pages - 3 or (p >= page - 2 and p <= page + 2) %} <a
+                    href="?page={{ p }}&q={{ query }}&brand={{ sel_brand }}&material={{ sel_material }}&condition={{ sel_condition }}&min_price={{ sel_min_price }}&max_price={{ sel_max_price }}"
+                    class="page-btn">{{ p }}</a>
+                    {% elif p == 4 or p == total_pages - 3 %}
+                    <span class="page-dots">...</span>
+                    {% endif %}
+                    {% endfor %}
 
-            {% if page < total_pages %}
-            <a href="?page={{ page + 1 }}&q={{ query }}&brand={{ sel_brand }}&material={{ sel_material }}&condition={{ sel_condition }}&min_price={{ sel_min_price }}&max_price={{ sel_max_price }}" class="page-btn">Next &raquo;</a>
-            {% endif %}
+                    {% if page < total_pages %} <a
+                        href="?page={{ page + 1 }}&q={{ query }}&brand={{ sel_brand }}&material={{ sel_material }}&condition={{ sel_condition }}&min_price={{ sel_min_price }}&max_price={{ sel_max_price }}"
+                        class="page-btn">Next &raquo;</a>
+                        {% endif %}
         </div>
         {% endif %}
     </section>
@@ -1267,6 +1722,7 @@
             </div>
             <div class="modal-body">
                 <div class="detail-grid" id="detailGrid"></div>
+                <div class="reviews-section" id="reviewsSection"></div>
             </div>
             {% if is_admin %}
             <div class="modal-actions">
@@ -1332,7 +1788,9 @@
                 <button class="modal-close" onclick="closeModal('wishlistModal')">&times;</button>
             </div>
             <div class="modal-body" id="wishlistBody">
-                <div class="wishlist-empty"><div class="icon">&#9825;</div>Your wishlist is empty.</div>
+                <div class="wishlist-empty">
+                    <div class="icon">&#9825;</div>Your wishlist is empty.
+                </div>
             </div>
         </div>
     </div>
@@ -1358,7 +1816,8 @@
         <div class="compare-bar-actions">
             <span style="color:#888;font-size:12px;" id="compareCount">0 / 4 selected</span>
             <button class="compare-clear-btn" onclick="clearCompare()">Clear</button>
-            <button class="compare-now-btn" id="compareNowBtn" onclick="openCompareModal()" disabled>Compare Now</button>
+            <button class="compare-now-btn" id="compareNowBtn" onclick="openCompareModal()" disabled>Compare
+                Now</button>
         </div>
     </div>
 
@@ -1377,14 +1836,20 @@
             btn.classList.toggle('active');
         }
 
-        /* ── Sort ── */
+
+        /* Updates the catalogue sorting option by modifying the URL query parameter
+        and reloading the page with the selected sort applied */
         function updateSort(sortValue) {
             const url = new URL(window.location);
+
+            // Add or remove the 'sort' query parameter   
             if (sortValue) {
                 url.searchParams.set('sort', sortValue);
             } else {
                 url.searchParams.delete('sort');
             }
+
+            // Reload page with updated sorting
             window.location = url;
         }
 
@@ -1430,7 +1895,7 @@
                                         <span class="similar-brand">${w.brand}</span>
                                         <span class="similar-name">${w.name}</span>
                                     </div>
-                                    <span class="similar-price">$${parseFloat(w.price).toLocaleString('en-US', {minimumFractionDigits: 2})}</span>
+                                    <span class="similar-price">$${parseFloat(w.price).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
                                 </div>
                             `).join('')}
                         </div>
@@ -1441,7 +1906,7 @@
                 ${imgHtml}
                 <div class="detail-item full">
                     <span class="detail-label">Price</span>
-                    <span class="detail-value price">$${parseFloat(data.price).toLocaleString('en-US', {minimumFractionDigits: 2})}</span>
+                    <span class="detail-value price">$${parseFloat(data.price).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Brand</span>
@@ -1462,7 +1927,10 @@
                 ${similarHtml}
             `;
 
+            document.getElementById('reviewsSection').innerHTML = '<p style="color:#444;font-size:13px;padding:16px 0;">Loading reviews…</p>';
             document.getElementById('detailModal').classList.add('open');
+            selectedRating = 0;
+            loadReviews(watchId);
         }
 
         /* ── Add Modal ── */
@@ -1603,13 +2071,13 @@
                 body.innerHTML = `<div class="wishlist-grid">${data.watches.map(w => `
                     <div class="wishlist-item" onclick="closeModal('wishlistModal'); openDetailModal(${w.watch_id})">
                         ${w.image_url
-                            ? `<img src="${w.image_url}" alt="${w.name}">`
-                            : `<div style="height:140px;display:flex;align-items:center;justify-content:center;font-size:40px;background:#111;">&#9201;</div>`}
+                        ? `<img src="${w.image_url}" alt="${w.name}">`
+                        : `<div style="height:140px;display:flex;align-items:center;justify-content:center;font-size:40px;background:#111;">&#9201;</div>`}
                         <button class="wishlist-item-remove" onclick="event.stopPropagation(); removeFromWishlist(${w.watch_id}, this)" title="Remove">&#10005;</button>
                         <div class="wishlist-item-body">
                             <div class="wishlist-item-brand">${w.brand}</div>
                             <div class="wishlist-item-name">${w.name}</div>
-                            <div class="wishlist-item-price">$${parseFloat(w.price).toLocaleString('en-US', {minimumFractionDigits: 2})}</div>
+                            <div class="wishlist-item-price">$${parseFloat(w.price).toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
                         </div>
                     </div>`).join('')}</div>`;
             }
@@ -1671,8 +2139,8 @@
             chips.innerHTML = compareList.map(w => `
                 <div class="compare-chip">
                     ${w.imageUrl
-                        ? `<img class="compare-chip-img" src="${w.imageUrl}" alt="${w.name}">`
-                        : `<div class="compare-chip-img" style="display:flex;align-items:center;justify-content:center;background:#111;font-size:18px;">&#9201;</div>`}
+                    ? `<img class="compare-chip-img" src="${w.imageUrl}" alt="${w.name}">`
+                    : `<div class="compare-chip-img" style="display:flex;align-items:center;justify-content:center;background:#111;font-size:18px;">&#9201;</div>`}
                     <span class="compare-chip-name">${w.name}</span>
                     <button class="compare-chip-remove" onclick="removeFromCompareBar(${w.id})">&#10005;</button>
                 </div>`).join('');
@@ -1704,12 +2172,12 @@
             );
 
             const fields = [
-                { label: 'Photo',      key: 'image_url',  type: 'img' },
-                { label: 'Price',      key: 'price',      type: 'price' },
-                { label: 'Brand',      key: 'brand' },
-                { label: 'Material',   key: 'material' },
-                { label: 'Reference',  key: 'reference' },
-                { label: 'Condition',  key: 'condition' },
+                { label: 'Photo', key: 'image_url', type: 'img' },
+                { label: 'Price', key: 'price', type: 'price' },
+                { label: 'Brand', key: 'brand' },
+                { label: 'Material', key: 'material' },
+                { label: 'Reference', key: 'reference' },
+                { label: 'Condition', key: 'condition' },
             ];
 
             const table = document.getElementById('compareTable');
@@ -1725,10 +2193,10 @@
             const bodyRows = fields.map(f => `<tr>
                 <td class="row-label">${f.label}</td>
                 ${details.map(w => {
-                    if (f.type === 'img') return `<td class="watch-img-cell">${w.image_url ? `<img src="${w.image_url}" alt="${w.name}">` : '&#9201;'}</td>`;
-                    if (f.type === 'price') return `<td class="price-cell">$${parseFloat(w.price).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>`;
-                    return `<td>${w[f.key] || '—'}</td>`;
-                }).join('')}
+                if (f.type === 'img') return `<td class="watch-img-cell">${w.image_url ? `<img src="${w.image_url}" alt="${w.name}">` : '&#9201;'}</td>`;
+                if (f.type === 'price') return `<td class="price-cell">$${parseFloat(w.price).toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>`;
+                return `<td>${w[f.key] || '—'}</td>`;
+            }).join('')}
             </tr>`).join('');
 
             table.innerHTML = headRow + `<tbody>${bodyRows}</tbody>`;
@@ -1744,6 +2212,164 @@
                 openCompareModal();
             }
         }
+
+        /* ── Reviews ── */
+        const currentUser = {{ session['username'] | tojson }};
+        const isAdmin = {{ 'true' if is_admin else 'false' }};
+        const isGuest = {{ 'true' if session['role'] == 'GUEST' else 'false' }};
+        let selectedRating = 0;
+
+        function starsHtml(rating, small = false) {
+            let s = '';
+            for (let i = 1; i <= 5; i++) s += i <= rating ? '★' : '☆';
+            return `<span class="stars-display${small ? ' sm' : ''}">${s}</span>`;
+        }
+
+        function formatDate(iso) {
+            try {
+                return new Date(iso).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            } catch { return iso; }
+        }
+
+        async function loadReviews(watchId) {
+            const res = await fetch(`/api/reviews/${watchId}`);
+            const data = await res.json();
+            renderReviews(watchId, data);
+        }
+
+        function renderReviews(watchId, data) {
+            const section = document.getElementById('reviewsSection');
+            const { reviews, user_review, average_rating, is_guest } = data;
+
+            const avgHtml = average_rating !== null
+                ? `<div class="reviews-avg">${starsHtml(Math.round(average_rating))}
+                   <span class="avg-label">${average_rating} / 5 &nbsp;·&nbsp; ${reviews.length} review${reviews.length !== 1 ? 's' : ''}</span></div>`
+                : `<p class="no-reviews">No reviews yet. Be the first!</p>`;
+
+            // Form: show if no user review, else show "you reviewed" with option to edit
+            // BUT: Don't show for guests
+            const formHtml = is_guest
+                ? `<div style="background: rgba(184, 148, 81, 0.1); border: 1px solid rgba(184, 148, 81, 0.3); padding: 12px 16px; border-radius: 10px; font-size: 13px; color: #b89451; text-align: center; margin: 16px 0;">
+                       Create an account to write and rate watches
+                   </div>`
+                : buildReviewForm(watchId, user_review);
+
+            // Review list
+            const listHtml = reviews.length
+                ? `<div class="review-list">${reviews.map(r => buildReviewCard(watchId, r)).join('')}</div>`
+                : '';
+
+            section.innerHTML = `
+                <h3>Reviews</h3>
+                ${avgHtml}
+                ${formHtml}
+                ${listHtml}
+            `;
+
+            // Re-attach star picker events
+            if (!is_guest) {
+                setupStarPicker(watchId, user_review ? user_review.rating : 0);
+            }
+        }
+
+        function buildReviewForm(watchId, userReview) {
+            const editing = !!userReview;
+            return `
+            <div class="review-form" id="reviewForm">
+                <label>Your Rating</label>
+                <div class="star-picker" id="starPicker">
+                    ${[1, 2, 3, 4, 5].map(i => `<span data-val="${i}">★</span>`).join('')}
+                </div>
+                <label>Title</label>
+                <input type="text" id="reviewTitle" placeholder="e.g. Exceptional timepiece" maxlength="120"
+                       value="${editing ? escHtml(userReview.title) : ''}">
+                <label>Review</label>
+                <textarea id="reviewBody" placeholder="Share your thoughts...">${editing ? escHtml(userReview.body) : ''}</textarea>
+                <button class="review-submit-btn" onclick="submitReview(${watchId})">
+                    ${editing ? 'Update Review' : 'Submit Review'}
+                </button>
+                ${editing ? `<button onclick="deleteReview(${watchId}, ${userReview.review_id})" style="background:none;border:none;color:#555;cursor:pointer;font-size:12px;margin-left:12px;">Delete my review</button>` : ''}
+            </div>`;
+        }
+
+        function buildReviewCard(watchId, r) {
+            const isOwn = r.username === currentUser;
+            const canDelete = isOwn || isAdmin;
+            return `
+            <div class="review-card" id="rc-${r.review_id}">
+                <div class="review-card-header">
+                    <div class="review-card-meta">
+                        ${starsHtml(r.rating, true)}
+                        <span class="review-card-title">${escHtml(r.title)}</span>
+                        <span class="review-card-author">
+                            ${escHtml(r.username)} &nbsp;·&nbsp; ${formatDate(r.timestamp)}
+                            ${isOwn ? '<span class="your-review-badge">You</span>' : ''}
+                        </span>
+                    </div>
+                    ${canDelete ? `<button class="review-delete-btn" onclick="deleteReview(${watchId}, ${r.review_id})" title="Delete review">&#128465;</button>` : ''}
+                </div>
+                <div class="review-card-body">${escHtml(r.body)}</div>
+            </div>`;
+        }
+
+        function setupStarPicker(watchId, initialRating) {
+            selectedRating = initialRating;
+            const picker = document.getElementById('starPicker');
+            if (!picker) return;
+            const stars = picker.querySelectorAll('span');
+
+            function highlight(n) {
+                stars.forEach((s, i) => s.classList.toggle('lit', i < n));
+            }
+            highlight(selectedRating);
+
+            stars.forEach(star => {
+                star.addEventListener('mouseenter', () => highlight(+star.dataset.val));
+                star.addEventListener('mouseleave', () => highlight(selectedRating));
+                star.addEventListener('click', () => {
+                    selectedRating = +star.dataset.val;
+                    highlight(selectedRating);
+                });
+            });
+        }
+
+        async function submitReview(watchId) {
+            const title = document.getElementById('reviewTitle').value.trim();
+            const body = document.getElementById('reviewBody').value.trim();
+            if (!selectedRating) { showToast('Please select a star rating.', 'error'); return; }
+            if (!title) { showToast('Please add a title.', 'error'); return; }
+            if (!body) { showToast('Please write your review.', 'error'); return; }
+
+            const res = await fetch(`/api/reviews/${watchId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rating: selectedRating, title, body }),
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast(data.updated ? 'Review updated!' : 'Review submitted!', 'success');
+                loadReviews(watchId);
+            } else {
+                showToast(data.error || 'Could not submit review.', 'error');
+            }
+        }
+
+        async function deleteReview(watchId, reviewId) {
+            if (!confirm('Delete this review?')) return;
+            const res = await fetch(`/api/reviews/${watchId}?review_id=${reviewId}`, { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) {
+                showToast('Review deleted.', 'success');
+                loadReviews(watchId);
+            } else {
+                showToast(data.error || 'Could not delete.', 'error');
+            }
+        }
+
+        function escHtml(str) {
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
     </script>
 </body>
+
 </html>

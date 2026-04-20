@@ -23,7 +23,8 @@
 
             justify-content: center;
             overflow-y: auto;
-            align-items: flex-start;   /* makes the scroll bar not mess up the UI */
+            align-items: flex-start;
+            /* makes the scroll bar not mess up the UI */
             padding-top: 60px;
             /* adds spacing from top */
 
@@ -41,36 +42,17 @@
             padding: 40px 20px;
         }
 
-        /* Animated background */
-        body::before {
-            content: '';
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(ellipse at 20% 50%, rgba(184, 148, 81, 0.04) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 20%, rgba(184, 148, 81, 0.03) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 80%, rgba(184, 148, 81, 0.02) 0%, transparent 50%);
-            animation: bgShift 20s ease-in-out infinite;
-            z-index: 0;
-        }
+        /* Animated background (they all look silly . . . leave it black )*/
+        /* body {
+    background-color: #0d0d0d;
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    
+    /* Tiny radial gradients creating a seamless dot pattern */
+        /*  background-image: radial-gradient(#262626 1px, transparent 1px);  */
+        /* background-size: 4px 4px; /* The size and spacing of the dots */
 
-        @keyframes bgShift {
-
-            0%,
-            100% {
-                transform: translate(0, 0) rotate(0deg);
-            }
-
-            33% {
-                transform: translate(2%, -1%) rotate(1deg);
-            }
-
-            66% {
-                transform: translate(-1%, 2%) rotate(-1deg);
-            }
-        }
 
         .login-container {
             position: relative;
@@ -392,24 +374,32 @@
 
 <body>
     <div class="login-container">
+        <!-- Branding section (app logo/title) -->
         <div class="brand">
-            <div class="brand-icon">&#9201;</div>
+            <div class="brand-icon">&#9201;</div> <!-- Clock icon -->
             <h1>Watch Catalogue</h1>
             <p>Luxury Watch Catalogue</p>
         </div>
 
+        <!-- Logic for login and sign up card -->
         <div class="login-card">
             <h2>Welcome Back</h2>
 
+            <!-- Success message (e.g., account created) -->
             {% if message %}
             <div class="message-msg">{{ message }}</div>
             {% endif %}
 
+            <!-- General error message (e.g., login failed) -->
             {% if error %}
             <div class="error-msg">{{ error }}</div>
             {% endif %}
 
+            <!-- LOGIN SECTION -->
+            <!-- Hidden when signup mode is active -->
             <div id="loginSection" class="{% if show_signup %}hidden{% endif %}">
+
+                <!-- Login form -->
                 <form method="POST" action="{{ url_for('login') }}">
                     <div class="form-group">
                         <label>Username</label>
@@ -420,41 +410,73 @@
                         <label>Password</label>
                         <input type="password" name="password" placeholder="Enter your password" required>
                     </div>
+
+                    <!-- Submit login Info -->
                     <button type="submit" class="login-btn">Sign In</button>
                 </form>
 
+                <!-- Toggle to signup view -->
                 <div class="toggle-row">
                     <span>New to the catalogue?</span>
                     <button type="button" class="secondary-btn" id="showSignupBtn">Sign Up</button>
                 </div>
+
+                <!-- Guest login option -->
+                <form method="POST" action="{{ url_for('login') }}" style="margin-top: 20px;">
+                    <input type="hidden" name="guest" value="true"> <!-- Flag for guest access -->
+                    <button type="submit" class="secondary-btn" style="width: 100%;">
+                        Continue as Guest
+                    </button>
+                </form>
+
+                <!-- Guest limitations info -->
+                <p style="text-align: center; font-size: 11px; color: #555; margin-top: 12px;">Guest access: Browse &
+                    filter watches, view reviews. No wishlist or review writing.
+                </p>
             </div>
 
+            <!-- SIGNUP SECTION -->
+            <!-- Hidden by default unless show_signup is true -->
             <div id="signupSection" class="signup-card {% if not show_signup %}hidden{% endif %}">
                 <h2>Create Account</h2>
+
+                <!-- Signup form -->
                 <form method="POST" action="{{ url_for('signup') }}">
                     <div class="form-group">
                         <label>Username</label>
                         <input type="text" name="username" placeholder="Choose a username" value="{{ username or '' }}"
                             required>
+
+                        <!-- Username validation error -->
                         {% if errors and errors.username %}
                         <div class="field-error">{{ errors.username }}</div>
                         {% endif %}
                     </div>
+
                     <div class="form-group">
                         <label>Password</label>
                         <input type="password" name="password" placeholder="Choose a password" required>
+
+                        <!-- Password validation error -->
                         {% if errors and errors.password %}
                         <div class="field-error">{{ errors.password }}</div>
                         {% endif %}
                     </div>
+
+                    <!-- Submit signup -->
                     <button type="submit" class="login-btn">Create Account</button>
                 </form>
+
+                <!-- Toggle back to login view -->
                 <div class="toggle-row">
                     <span>Already have an account?</span>
-                    <button type="button" class="secondary-btn" id="showLoginBtn">Back to Login</button>
+                    <button type="button" class="secondary-btn" id="showLoginBtn">
+                        Back to Login
+                    </button>
                 </div>
             </div>
 
+            <!-- Admin account info (for demo purposes) -->
             <div class="test-accounts">
                 <h3>Admin Access</h3>
                 <div class="divider"></div>
@@ -464,6 +486,7 @@
             </div>
         </div>
     </div>
+
 
     <script>
         const showSignupBtn = document.getElementById('showSignupBtn');
