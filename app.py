@@ -92,7 +92,7 @@ def load_users_from_csv(filepath):
             if not username:
                 continue
             # If password is not a hash, hash it (legacy support)
-            if password and not password.startswith('pbkdf2:'):
+            if password and not (password.startswith('pbkdf2:') or password.startswith('scrypt:')):
                 password_hash = generate_password_hash(password)
             else:
                 password_hash = password
@@ -153,6 +153,7 @@ def save_reviews_to_csv(filepath):
 def initialize_users(filepath):
     global users
     users = load_users_from_csv(filepath)
+    # starter default accounts
     if not users:
         users = {
             "user": User(1, "user", generate_password_hash("1234"), Role.USER, []),
