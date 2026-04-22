@@ -120,13 +120,13 @@ As part of a 5-person university development team, my personal contributions inc
 ## Screenshots
 
 ### Login Page
-![Login](images/login.png)
+![Login](static/images/login.png)
 
 ### Watch Catalogue
-![Catalogue](images/catalogue.png)
+![Catalogue](static/images/catalogue.png)
 
 ### Admin Panel (Edit Watch)
-![Admin](images/adminEdit.png)
+![Admin](static/images/adminEdit.png)
 
 
 ## Installation & Setup
@@ -177,8 +177,11 @@ As part of a 5-person university development team, my personal contributions inc
 5. **Access the Application**
    Open your browser and navigate to `http://localhost:5000`
 
- ## Project Notice
-Product images were removed due to copyright considerations. The application functionality remains fully intact. I will be adding images to fix this shortly.
+ ## Assets Notice
+Watch images were AI-generated placeholder assets created for this project. 
+
+These images are not official manufacturer photos and are not intended to represent exact real-world models. Brand names and product data in the catalogue are used as sample inventory metadata.
+
 
 ## Future Improvements
 
