@@ -183,7 +183,7 @@ Watch images were AI-generated placeholder assets created for this project.
 These images are not official manufacturer photos and are not intended to represent exact real-world models. Brand names and product data in the catalogue are used as sample inventory metadata.
 
 
-## Future Improvements
+## Future Improvements  - currently working on migrating to a Database 
 
 - **Database Migration**: Transition from CSV to a database system (PostgreSQL/MySQL)
 - **Enhanced Security**: Implement JWT-based authentication and improved password hashing
