@@ -4,7 +4,7 @@ import re
 from datetime import datetime, timezone
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from backend import Role, Watch, User, Admin, Catalogue, Review
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-key")
@@ -77,29 +77,30 @@ def save_watches_to_csv(filepath, watches):
 
 def load_users_from_csv(filepath):
     loaded_users = {}
+
     if not os.path.exists(filepath):
         return loaded_users
 
     with open(filepath, newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
+
         for row in reader:
             username = row.get("username", "").strip()
             password = row.get("password", "").strip()
             role_value = row.get("role", "USER").strip().upper()
             user_id = int(row.get("user_id", "0") or 0)
+
             wishlist_str = row.get("wishlist", "").strip()
             wishlist = [int(wid) for wid in wishlist_str.split(",") if wid.strip()] if wishlist_str else []
+
             if not username:
                 continue
-            # If password is not a hash, hash it (legacy support)
-            if password and not (password.startswith('pbkdf2:') or password.startswith('scrypt:')):
-                password_hash = generate_password_hash(password)
-            else:
-                password_hash = password
+
             if role_value == Role.ADMIN.value:
-                loaded_users[username] = Admin(user_id or len(loaded_users) + 1, username, password_hash, wishlist)
+                loaded_users[username] = Admin(user_id, username, password, wishlist)
             else:
-                loaded_users[username] = User(user_id or len(loaded_users) + 1, username, password_hash, Role.USER, wishlist)
+                loaded_users[username] = User(user_id, username, password, Role.USER, wishlist)
+
     return loaded_users
 
 
@@ -153,13 +154,19 @@ def save_reviews_to_csv(filepath):
 def initialize_users(filepath):
     global users
     users = load_users_from_csv(filepath)
-    # starter default accounts
-    if not users:
-        users = {
-            "user": User(1, "user", generate_password_hash("1234"), Role.USER, []),
-            "admin": Admin(2, "admin", generate_password_hash("admin123"), []),
-        }
-        save_users_to_csv(filepath, users)
+
+    # if file already has users, dont overwrite
+    if users:
+        return
+
+    # if file is empty, then add 2 default roles (1 admin, 1 normal user)
+    users["user"] = User(1, "user", generate_password_hash("1234"), Role.USER, []
+    )
+
+    users["admin"] = Admin(2, "admin", generate_password_hash("admin123"), []
+    )
+
+    save_users_to_csv(filepath, users)
 
 
 def get_similar_watches(target_watch, all_watches, limit=3):
@@ -260,10 +267,8 @@ def login():
     if request.method == "POST":
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "").strip()
-        guest = request.form.get("guest")
 
-        # Guest login
-        if guest:
+        if request.form.get("guest"):
             session["username"] = "Guest"
             session["role"] = Role.GUEST.value
             session["wishlist"] = []
@@ -276,13 +281,13 @@ def login():
         if user.login(username, password):
             session["username"] = username
             session["role"] = user.role.value
-            session["wishlist"] = user.wishlist.copy()  # Load user's wishlist into session
+            session["wishlist"] = user.wishlist.copy()
             return redirect(url_for("catalogue_page"))
-        else:
-            return render_template("login.html", error="Incorrect username or password.")
 
-    message = request.args.get("message")
-    return render_template("login.html", message=message)
+        return render_template("login.html", error="Incorrect username or password.")
+
+    return render_template("login.html")
+
 
 
 @app.route("/signup", methods=["POST"])
@@ -352,25 +357,50 @@ def signup():
 
 @app.route("/logout")
 def logout():
+    # Save wishlist back to user before clearing session
+    if "username" in session and session.get("role") != Role.GUEST.value:
+        username = session["username"]
+        user = users.get(username)
+        if user:
+            user.wishlist = session.get("wishlist", []).copy()
+            save_users_to_csv(users_csv_path, users)
     session.clear()
     return redirect(url_for("login", message="Logged out successfully."))
+
+
+@app.route("/api/wishlist", methods=["GET"])
+def get_wishlist():
+    if "username" not in session or session.get("role") == Role.GUEST.value:
+        return jsonify({"error": "Not logged in or guest account"}), 401
+
+    username = session["username"]
+    user = users.get(username)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    wishlist = session.get("wishlist", [])
+    watches = [catalogue.get_watch(wid).get_details() for wid in wishlist if catalogue.get_watch(wid)]
+    return jsonify({"watches": watches})
 
 
 @app.route("/api/wishlist/<int:watch_id>", methods=["POST"])
 def add_to_wishlist(watch_id):
     if "username" not in session or session.get("role") == Role.GUEST.value:
         return jsonify({"error": "Not logged in or guest account"}), 401
-    if not catalogue.get_watch(watch_id):
-        return jsonify({"error": "Watch not found"}), 404
-    wishlist = session.get("wishlist", [])
-    if watch_id not in wishlist:
-        wishlist.append(watch_id)
-        session["wishlist"] = wishlist
-        # Update user's wishlist and save
-        username = session["username"]
-        users[username].wishlist = wishlist.copy()
-        save_users_to_csv(users_csv_path, users)
-    return jsonify({"success": True, "count": len(wishlist)})
+
+    username = session["username"]
+    user = users.get(username)
+
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    if watch_id not in user.wishlist:
+        user.wishlist.append(watch_id)
+
+    session["wishlist"] = user.wishlist.copy()
+    save_users_to_csv(users_csv_path, users)
+
+    return jsonify({"success": True, "count": len(user.wishlist)})
 
 
 @app.route("/api/wishlist/<int:watch_id>", methods=["DELETE"])
@@ -552,10 +582,12 @@ def edit_watch(watch_id):
                 kwargs[field] = data[field]
         if "price" in data:
             kwargs["price"] = float(data["price"])
+
         admin.edit_watch(watch_id, catalogue, **kwargs)
         save_watches_to_csv(csv_path, catalogue.get_all_watches())
         watch = catalogue.get_watch(watch_id)
         return jsonify({"success": True, "watch": watch.get_details()})
+    
     except (ValueError, PermissionError) as e:
         return jsonify({"error": str(e)}), 400
 
