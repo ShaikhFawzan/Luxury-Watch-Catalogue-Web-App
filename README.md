@@ -177,10 +177,15 @@ As part of a 5-person university development team, my personal contributions inc
 5. **Access the Application**
    Open your browser and navigate to `http://localhost:5000`
 
- ## Assets Notice
+ ## Image Notice
 Watch images were AI-generated placeholder assets created for this project. 
 
 These images are not official manufacturer photos and are not intended to represent exact real-world models. Brand names and product data in the catalogue are used as sample inventory metadata.
+
+## Data Persistence Notice
+Since this was originally a project done for university, User-generated data such as wishlists and reviews is currently stored in CSV files to satisfy the assignment requirements. Updates are not guaranteed to persist after server restarts, redeployments, or environment resets. As a result, some changes made in the live version may not be retained permanently. 
+
+A database-backed storage system (using Supabase) is planned as the next major improvement to provide reliable long-term persistence, better scalability, and more consistent data handling across sessions
 
 
 ## Future Improvements  - currently working on migrating to a Database 
