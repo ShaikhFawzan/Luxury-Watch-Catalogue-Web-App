@@ -61,29 +61,36 @@ A full-stack web application built with **Python Flask** for browsing, managing,
 ## Project Structure
 
 ```
-Watch-Catalogue-Project-/
+Luxury-Watch-Catalogue-Web-App/
 
 ├── Diagrams/                      # UML and design diagrams
-│   ├── UML_Class_Diagram.pdf 
-├── data/                          # Data
+│   └── UML_Diagram.pdf
+├── data/                          # CSV data files
 │   ├── reviews.csv
+│   ├── testdata.csv
 │   ├── users.csv
 │   └── watches.csv
-├── images/                        # Images
-│   ├── login.png
-│   ├── catalogue.png
-│   └── adminEdit.png
 ├── scripts/                       # Build and deployment scripts
 │   ├── build.bat
 │   └── build.sh
+├── static/                        # Static assets
+│   └── images/                    # Images and media files
+│       ├── adminEdit.png
+│       ├── catalogue.png
+│       ├── login.png
+│       ├── tools/
+│       │   └── image_mapper.py
+│       └── watches/
 ├── templates/                     # Jinja2 HTML templates
 │   ├── catalogue.html
 │   └── login.html
-├── Procfile                       # for server
+├── .gitignore                     # Git ignore file
+├── LICENSE                        # Project license
+├── Procfile                       # Deployment file
+├── README.md                      # Project documentation
 ├── app.py                         # Main Flask application
 ├── backend.py                     # Backend logic and utilities
 └── requirements.txt               # Python dependencies
-
 ```
 
 ## My Contributions
