@@ -1,7 +1,7 @@
 import os
 import re
 from datetime import datetime, timezone
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash, get_flashed_messages
 from backend import Role, Watch, User, Admin, Catalogue, Review
 from werkzeug.security import generate_password_hash, check_password_hash
 from supabase import create_client, Client
@@ -229,7 +229,8 @@ def login():
 
         user = users.get(username)
         if user is None:
-            return render_template("login.html", error="User not found.")
+            flash("User not found.", "error")
+            return redirect(url_for("login"))
 
         if user.login(username, password):
             session["username"] = username
@@ -237,9 +238,11 @@ def login():
             session["wishlist"] = user.wishlist.copy()
             return redirect(url_for("catalogue_page"))
 
-        return render_template("login.html", error="Incorrect username or password.")
+        flash("Incorrect username or password.", "error")
+        return redirect(url_for("login"))
 
-    return render_template("login.html")
+    messages = get_flashed_messages()
+    return render_template("login.html", messages=messages)
 
 
 @app.route("/signup", methods=["POST"])
@@ -280,7 +283,8 @@ def signup():
     users[username] = new_user
     save_user_to_supabase(new_user)          # ← Supabase instead of CSV
 
-    return redirect(url_for("login", message="Account created successfully. Please sign in."))
+    flash("Account created successfully. Please sign in.", "success")
+    return redirect(url_for("login"))
 
 
 @app.route("/logout")
