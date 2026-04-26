@@ -151,7 +151,7 @@ def initialize_users():
         return
 
     # Seed two default accounts
-    default_user = User(1, "user", generate_password_hash("1234"), Role.USER, [])
+    default_user = User(1, "user", generate_password_hash("UserPassword123"), Role.USER, [])
     default_admin = Admin(2, "admin", generate_password_hash("admin123"), [])
     users["user"] = default_user
     users["admin"] = default_admin

@@ -338,6 +338,55 @@
             margin: 10px 0;
         }
 
+        .password-requirements {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(184, 148, 81, 0.1);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-top: 12px;
+            font-size: 12px;
+        }
+
+        .password-requirements h4 {
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #b89451;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .requirement-item {
+            display: flex;
+            align-items: center;
+            padding: 6px 0;
+            color: #999;
+            transition: color 0.2s ease;
+        }
+
+        .requirement-item.met {
+            color: #9ade85;
+        }
+
+        .requirement-check {
+            width: 16px;
+            height: 16px;
+            border: 1.5px solid #555;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-size: 11px;
+            transition: all 0.2s ease;
+        }
+
+        .requirement-item.met .requirement-check {
+            background: rgba(158, 222, 133, 0.2);
+            border-color: #9ade85;
+            color: #9ade85;
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -468,7 +517,28 @@
 
                     <div class="form-group">
                         <label>Password</label>
-                        <input type="password" name="password" placeholder="Choose a password" required>
+                        <input type="password" name="password" id="signupPassword" placeholder="Choose a password" required>
+
+                        <!-- Password Requirements Checklist -->
+                        <div class="password-requirements">
+                            <h4>Password Requirements</h4>
+                            <div class="requirement-item" id="req-length">
+                                <span class="requirement-check">✓</span>
+                                <span>At least 8 characters</span>
+                            </div>
+                            <div class="requirement-item" id="req-uppercase">
+                                <span class="requirement-check">✓</span>
+                                <span>At least one uppercase letter (A-Z)</span>
+                            </div>
+                            <div class="requirement-item" id="req-lowercase">
+                                <span class="requirement-check">✓</span>
+                                <span>At least one lowercase letter (a-z)</span>
+                            </div>
+                            <div class="requirement-item" id="req-number">
+                                <span class="requirement-check">✓</span>
+                                <span>At least one number (0-9)</span>
+                            </div>
+                        </div>
 
                         <!-- Password validation error -->
                         {% if errors and errors.password %}
@@ -518,6 +588,46 @@
             showLoginBtn.addEventListener('click', () => {
                 signupSection.classList.add('hidden');
                 loginSection.classList.remove('hidden');
+            });
+        }
+
+        // Password requirements validation
+        const passwordInput = document.getElementById('signupPassword');
+        if (passwordInput) {
+            passwordInput.addEventListener('input', (e) => {
+                const password = e.target.value;
+
+                // Check length (at least 8 characters)
+                const lengthReq = document.getElementById('req-length');
+                if (password.length >= 8) {
+                    lengthReq.classList.add('met');
+                } else {
+                    lengthReq.classList.remove('met');
+                }
+
+                // Check uppercase (at least one A-Z)
+                const uppercaseReq = document.getElementById('req-uppercase');
+                if (/[A-Z]/.test(password)) {
+                    uppercaseReq.classList.add('met');
+                } else {
+                    uppercaseReq.classList.remove('met');
+                }
+
+                // Check lowercase (at least one a-z)
+                const lowercaseReq = document.getElementById('req-lowercase');
+                if (/[a-z]/.test(password)) {
+                    lowercaseReq.classList.add('met');
+                } else {
+                    lowercaseReq.classList.remove('met');
+                }
+
+                // Check number (at least one 0-9)
+                const numberReq = document.getElementById('req-number');
+                if (/\d/.test(password)) {
+                    numberReq.classList.add('met');
+                } else {
+                    numberReq.classList.remove('met');
+                }
             });
         }
 
