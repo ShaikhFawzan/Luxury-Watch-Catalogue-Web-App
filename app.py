@@ -1,12 +1,26 @@
+# Main Flask application for Luxury Watch Catalogue
+# Features that I implemented/contributed to: 
+# - Supabase PostgreSQL migration (replaced CSV persistence)
+# - Authentication system (login/signup/guest sessions)
+# - Wishlist API with persistent user storage
+# - Review system with ratings + timestamps
+# - Catalogue sorting/filtering/search logic
+# - Similar watch recommendation engine
+# - Admin CRUD routes for watch inventory
+
 import os
 import re
 from datetime import datetime, timezone
+
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash, get_flashed_messages
-from backend import Role, Watch, User, Admin, Catalogue, Review
 from werkzeug.security import generate_password_hash, check_password_hash
+
 from supabase import create_client, Client
 from dotenv import load_dotenv
 
+from backend import Role, Watch, User, Admin, Catalogue, Review
+
+# App configuration
 load_dotenv()
 
 url = os.environ.get("SUPABASE_URL")
@@ -17,13 +31,15 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-key")
 
 # In-memory state (populated from Supabase on startup)
+# local cache used for fast access, changes are synched to Supabase. 
 catalogue = Catalogue()
 users = {}
 reviews: dict[int, list] = {}
 
 
 # ---------------------------------------------------------------------------
-# Supabase helpers — watches
+#                   Supabase helpers — watches
+# Added during migration from CSV storage to Supabase PostgreSQL.
 # ---------------------------------------------------------------------------
 
 def load_watches_from_supabase():
@@ -68,7 +84,8 @@ def delete_watch_from_supabase(watch_id):
 
 
 # ---------------------------------------------------------------------------
-# Supabase helpers — users
+#                   Supabase helpers — users
+# Added persistent accounts, hashed credentials, and wishlists.
 # ---------------------------------------------------------------------------
 
 def load_users_from_supabase():
@@ -107,7 +124,8 @@ def delete_user_from_supabase(username):
 
 
 # ---------------------------------------------------------------------------
-# Supabase helpers — reviews
+#                   Supabase helpers — reviews
+# Assisted with adding persistent reviews with ratings and timestamps
 # ---------------------------------------------------------------------------
 
 def load_reviews_from_supabase():
@@ -141,7 +159,7 @@ def delete_review_from_supabase(review_id):
 
 
 # ---------------------------------------------------------------------------
-# Startup — seed default users if the table is empty
+#                         Startup Initialization
 # ---------------------------------------------------------------------------
 
 def initialize_users():
@@ -160,7 +178,8 @@ def initialize_users():
 
 
 # ---------------------------------------------------------------------------
-# Similarity helper (unchanged)
+#                       Reccomendation Feature
+# Personally implemented feature for similar watch suggestions
 # ---------------------------------------------------------------------------
 
 def get_similar_watches(target_watch, all_watches, limit=3):
@@ -196,7 +215,7 @@ def get_similar_watches(target_watch, all_watches, limit=3):
 
 
 # ---------------------------------------------------------------------------
-# Boot
+# App Boot
 # ---------------------------------------------------------------------------
 
 load_watches_from_supabase()
@@ -205,7 +224,9 @@ load_reviews_from_supabase()
 
 
 # ---------------------------------------------------------------------------
-# Routes (all logic identical — only persistence calls changed)
+#                       Authentication Routes 
+# Assisted with login/logout 
+# personally implemented signup, guest option, and flash messaging
 # ---------------------------------------------------------------------------
 
 @app.route("/")
@@ -221,6 +242,7 @@ def login():
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "").strip()
 
+        # Guest mode with restricted permissions
         if request.form.get("guest"):
             session["username"] = "Guest"
             session["role"] = Role.GUEST.value
@@ -252,6 +274,7 @@ def signup():
 
     errors = {}
 
+    # Username validation
     if not username:
         errors["username"] = "Username is required."
     if not password:
@@ -259,6 +282,7 @@ def signup():
     if username in users:
         errors["username"] = "That username is already taken."
 
+    # Password validation
     if password:
         if len(password) < 8:
             errors["password"] = "Password must be at least 8 characters."
@@ -299,6 +323,10 @@ def logout():
     return redirect(url_for("login", message="Logged out successfully."))
 
 
+# ---------------------------------------------------------------------------
+#                       Wishlist API 
+# Assisted with implementing persistent wishlist feature.
+# ---------------------------------------------------------------------------
 @app.route("/api/wishlist", methods=["GET"])
 def get_wishlist():
     if "username" not in session or session.get("role") == Role.GUEST.value:
@@ -348,12 +376,17 @@ def remove_from_wishlist(watch_id):
 
     return jsonify({"success": True, "count": len(wishlist)})
 
-
+# ---------------------------------------------------------------------------
+#                       Catalogue Route 
+# Assisted with filtering and search
+# Personally implemented sorting
+# ---------------------------------------------------------------------------
 @app.route("/catalogue")
 def catalogue_page():
     if "username" not in session:
         return redirect(url_for("login"))
 
+    # query parameters for search/filter UI
     query = request.args.get("q", "").strip()
     brand = request.args.get("brand", "").strip()
     material = request.args.get("material", "").strip()
@@ -362,6 +395,7 @@ def catalogue_page():
     max_price = request.args.get("max_price", "").strip()
     sort_by = request.args.get("sort", "").strip()
 
+    # Search or filter catalogue
     if query:
         watches = catalogue.search_watches(query)
     elif brand or material or condition or min_price or max_price:
@@ -375,6 +409,7 @@ def catalogue_page():
     else:
         watches = catalogue.get_all_watches()
 
+    # Personally implemented sorting system
     sorted_watches = watches.copy()
     if sort_by == "price_low":
         sorted_watches.sort(key=lambda w: w.price)
@@ -387,14 +422,18 @@ def catalogue_page():
     elif sort_by == "condition":
         sorted_watches.sort(key=lambda w: w.condition.lower())
 
+    # pagination due to 600+ watches
     page = request.args.get("page", 1, type=int)
     per_page = 24
     total = len(sorted_watches)
+
     total_pages = max(1, (total + per_page - 1) // per_page)
     page = max(1, min(page, total_pages))
+
     start = (page - 1) * per_page
     paginated = sorted_watches[start: start + per_page]
 
+    # Create f  ilter dropdown values
     all_watches = catalogue.get_all_watches()
     brands = sorted(set(w.brand for w in all_watches))
     materials = sorted(set(w.material for w in all_watches))
@@ -425,7 +464,10 @@ def catalogue_page():
         wishlist_count=len(wishlist_ids),
     )
 
-
+# ---------------------------------------------------------------------------
+#                       Watch API + Admin CRUD 
+# Assisted with implementing Admin management routes.
+# ---------------------------------------------------------------------------
 @app.route("/api/watch/<int:watch_id>")
 def get_watch(watch_id):
     if "username" not in session:
@@ -502,7 +544,11 @@ def delete_watch(watch_id):
     except (ValueError, PermissionError) as e:
         return jsonify({"error": str(e)}), 400
 
-
+# ---------------------------------------------------------------------------
+#                       Review API 
+# Assisted with testing and debugging, didnt do much development here
+# Mainly fixed presistency bug
+# ---------------------------------------------------------------------------
 @app.route("/api/reviews/<int:watch_id>")
 def get_reviews(watch_id):
     if "username" not in session:
@@ -588,7 +634,9 @@ def delete_review(watch_id):
             return jsonify({"success": True})
     return jsonify({"error": "Review not found."}), 404
 
-
+# ---------------------------------------------------------------------------
+#                       Run Application 
+# ---------------------------------------------------------------------------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(debug=False, host="0.0.0.0", port=port)

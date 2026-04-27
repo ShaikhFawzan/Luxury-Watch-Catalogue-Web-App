@@ -129,7 +129,7 @@ As part of a 5-person university development team, I contributed significantly t
 - Resolved deployment persistence issues by transitioning to cloud-based storage on Render
 ### Core Features Implemented
 - Built advanced catalogue sorting and filtering system
-- Developed persistent wishlist functionality with full add/remove functionality tied to user sessions and database storage
+- Assisted with development of persistent wishlist functionality with full add/remove functionality tied to user sessions and database storage
 - Implemented recommendation engine based on watch attribute similarity
 ### Authentication & Session Management   
 - Implemented secure user authentication system using Flask sessions and role-based access control (User/Admin/Guest)

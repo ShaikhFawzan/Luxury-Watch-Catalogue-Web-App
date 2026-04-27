@@ -2,8 +2,8 @@ from enum import Enum
 from werkzeug.security import check_password_hash
 
 
-
 # Keeps the user roles clear and easy to check.
+# I helped to clearly seperate roles for for guest, user, and admin access control.
 class Role(Enum):
     GUEST = "GUEST"
     USER = "USER"
@@ -11,6 +11,7 @@ class Role(Enum):
 
 
 # Represents one watch in the catalogue.
+# Used for browsing, filtering, admin CRUD actions, and recommendations.
 class Watch:
     def __init__(self, watch_id, name, brand, price, material,
                  reference, condition, image_url):
@@ -23,6 +24,7 @@ class Watch:
         self.condition = condition
         self.image_url = image_url
 
+    # Convert to dictionary format for API responses & Templates 
     def get_details(self):
         return {
             "watch_id": self.watch_id,
@@ -35,12 +37,13 @@ class Watch:
             "image_url": self.image_url,
         }
 
+    # String version for debugging / logs
     def __str__(self):
         return f"{self.watch_id} - {self.name} ({self.brand}) - ${self.price}"
 
 
 # Base user class.
-
+# I personally implemented implement secure login support with hashed passwords and passwork check for sign up 
 class User:
     def __init__(self, user_id, username, password_hash, role=Role.USER, wishlist=None):
         self.user_id = user_id
@@ -50,6 +53,7 @@ class User:
         self.logged_in = False
         self.wishlist = wishlist if wishlist is not None else []
 
+    # verify username and hashed password
     def login(self, username, password):
         if self.username == username and check_password_hash(self.password_hash, password):
             self.logged_in = True
@@ -59,11 +63,13 @@ class User:
     def logout(self):
         self.logged_in = False
 
+    # User status
     def is_logged_in(self):
         return self.logged_in
 
 
-# Admin can do extra actions like adding watches.
+# Admin inherits from user, but has additional privileges.
+# I Just added Hashing here
 class Admin(User):
     def __init__(self, user_id, username, password_hash, wishlist=None):
         super().__init__(user_id, username, password_hash, Role.ADMIN, wishlist)
@@ -85,6 +91,8 @@ class Admin(User):
 
 
 # Stores all watches.
+# I contributed to filtering, search, and catalogue CRUD
+# I did sort individually
 class Catalogue:
     def __init__(self):
         self.watches = []
@@ -93,11 +101,13 @@ class Catalogue:
         if watch.watch_id < 0:
             raise ValueError(f"Watch ID cannot be negative.")
 
+        # Avoid duplicates
         for existing_watch in self.watches:
             if existing_watch.watch_id == watch.watch_id:
                 raise ValueError(f"Watch with ID {watch.watch_id} already exists.")
         self.watches.append(watch)
 
+    # Updates selected watch attributes
     def edit_watch(self, watch_id, **kwargs):
         for watch in self.watches:
             if watch.watch_id == watch_id:
@@ -122,6 +132,8 @@ class Catalogue:
     def get_all_watches(self):
         return self.watches
 
+    # Search by name, brand, or reference number
+    # I assisted with dynamic search functionality
     def search_watches(self, query):
         query = query.lower()
         return [w for w in self.watches if
@@ -129,6 +141,8 @@ class Catalogue:
                 query in w.brand.lower() or
                 query in w.reference.lower()]
 
+    # Multi-filter system used in catalogue browsing.
+    # Supports brand, price, material, and condition filtering
     def filter_watches(self, brand=None, min_price=None, max_price=None,
                        material=None, condition=None):
         results = self.watches
@@ -144,7 +158,8 @@ class Catalogue:
             results = [w for w in results if w.condition.lower() == condition.lower()]
         return results
 
-
+# Stores review data submitted by users
+# I primarily fixed persistence issues between sessions
 class Review:
     def __init__(self, review_id, watch_id, username, rating, title, body, timestamp):
         self.review_id = review_id
@@ -155,6 +170,7 @@ class Review:
         self.body = body
         self.timestamp = timestamp  # ISO string
 
+     # Converts review object to dictionary for API/database use.
     def to_dict(self):
         return {
             "review_id": self.review_id,
